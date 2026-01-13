@@ -1,6 +1,17 @@
 'use client'
 
-import { Users, Calendar, FileText, Briefcase } from 'lucide-react'
+import {
+  User,
+  Lock,
+  Users,
+  LayoutGrid,
+  Shield,
+  Key,
+  Calendar,
+  FileText,
+  Briefcase,
+  LayoutDashboard,
+} from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -30,6 +41,11 @@ type MenuItem = {
 }
 
 const menuItems: MenuItem[] = [
+  {
+    title: 'Dashboard',
+    url: '/',
+    icon: LayoutDashboard,
+  },
   {
     title: 'Empleados',
     url: '/employees',
