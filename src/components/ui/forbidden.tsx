@@ -38,7 +38,7 @@ export const ForbiddenDisabled = ({ children }: { children?: ReactNode }) => {
 }
 
 export type ForbiddenProps = {
-  variant?: 'page' | 'disabled'
+  variant?: 'page' | 'disabled' | 'hidden'
   children?: ReactNode
 }
 
@@ -46,6 +46,8 @@ export default function Forbidden({
   variant = 'page',
   children,
 }: ForbiddenProps) {
+  if (variant === 'hidden') return null
+
   return (
     <>
       {variant === 'page' && <ForbiddenPage />}

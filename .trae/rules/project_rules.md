@@ -24,11 +24,10 @@ src/
 │   ├── <feature>/
 │   │   ├── <feature>-form.tsx # Dentro de form solo debe de tener los field necesarios para el formulario, no la logica del formulario.
 │   │   ├── <feature>-list.tsx
-│   │   ├── <feature>-<edit/create>.tsx
+│   │   ├── <feature>-<edit/create>.tsx  # deben de estar dentro de un sheet
 │   │   ├── <feature>-delete.tsx  # debe de usar ui/alert-confirmation
 │   │   ├── <feature>-actions.tsx # debe de ser un dropdown con las acciones disponibles
-│   │   ├── <feature>-create-button.tsx
-│   │   └── <feature>-select.tsx # solo cuando se necesita
+│   │   └── <feature>-select.tsx # solo cuando se necesita, los select para versión web deben de estar dentro de un popover y para versión mobile dentro de un sheet
 │   └── ui/ # componentes reutilizables no deben de ser modificados salvo escepciones.
 ├── lib/
 ├── types/ # Siempre usar los tipos de supabase
@@ -50,7 +49,7 @@ Para el sistema de autenticación se usara supabase auth
 
 Para la base de datos se usara supabase
 
-- los tipos de supabase estaran en `types/supabase.types.ts`
+- los tipos de supabase estaran en `types/supabase.types.ts`, solo usaremos el esquema `vacation`
 
 **types**
 
