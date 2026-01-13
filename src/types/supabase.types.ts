@@ -284,6 +284,204 @@ export type Database = {
       [_ in never]: never
     }
   }
+  vacation: {
+    Tables: {
+      employees: {
+        Row: {
+          created_at: string
+          hire_date: string | null
+          id: string
+          labor_regime_id: string
+          manager_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          hire_date?: string | null
+          id: string
+          labor_regime_id: string
+          manager_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          hire_date?: string | null
+          id?: string
+          labor_regime_id?: string
+          manager_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'employees_labor_regime_id_fkey'
+            columns: ['labor_regime_id']
+            isOneToOne: false
+            referencedRelation: 'labor_regime'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'employees_manager_id_fkey'
+            columns: ['manager_id']
+            isOneToOne: false
+            referencedRelation: 'employees'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      labor_regime: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          policies: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          policies?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          policies?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      vacation_periods: {
+        Row: {
+          available_days: number
+          created_at: string
+          employee_id: string
+          end_date: string
+          id: string
+          period_label: string
+          start_date: string
+          total_days: number
+          updated_at: string
+        }
+        Insert: {
+          available_days: number
+          created_at?: string
+          employee_id: string
+          end_date: string
+          id?: string
+          period_label: string
+          start_date: string
+          total_days?: number
+          updated_at?: string
+        }
+        Update: {
+          available_days?: number
+          created_at?: string
+          employee_id?: string
+          end_date?: string
+          id?: string
+          period_label?: string
+          start_date?: string
+          total_days?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'vacation_periods_employee_id_fkey'
+            columns: ['employee_id']
+            isOneToOne: false
+            referencedRelation: 'employees'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      vacation_requests: {
+        Row: {
+          created_at: string
+          created_by: string
+          decided_at: string | null
+          decided_by: string | null
+          employee_id: string
+          end_date: string
+          id: string
+          request_note: string | null
+          response_note: string | null
+          start_date: string
+          status: Database['vacation']['Enums']['request_status']
+          submitted_at: string
+          total_days: number
+          updated_at: string
+          vacation_period_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          decided_at?: string | null
+          decided_by?: string | null
+          employee_id: string
+          end_date: string
+          id?: string
+          request_note?: string | null
+          response_note?: string | null
+          start_date: string
+          status: Database['vacation']['Enums']['request_status']
+          submitted_at?: string
+          total_days: number
+          updated_at?: string
+          vacation_period_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          employee_id?: string
+          end_date?: string
+          id?: string
+          request_note?: string | null
+          response_note?: string | null
+          start_date?: string
+          status?: Database['vacation']['Enums']['request_status']
+          submitted_at?: string
+          total_days?: number
+          updated_at?: string
+          vacation_period_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'vacation_requests_employee_id_fkey'
+            columns: ['employee_id']
+            isOneToOne: false
+            referencedRelation: 'employees'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'vacation_requests_vacation_period_id_fkey'
+            columns: ['vacation_period_id']
+            isOneToOne: false
+            referencedRelation: 'vacation_periods'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      request_status: 'PENDING' | 'APPROVED' | 'REJECTED'
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
 
 type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
@@ -406,5 +604,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {},
+  },
+  vacation: {
+    Enums: {
+      request_status: ['PENDING', 'APPROVED', 'REJECTED'],
+    },
   },
 } as const

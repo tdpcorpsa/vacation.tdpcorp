@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write --list-different .",
     "test": "vitest",
-    "supabase:gen": "npx supabase gen types typescript --project-id zrvddgkxhethxmrlvcwa > src/types/supabase.types.ts"
+    "supabase:gen": "npx supabase gen types typescript --project-id zrvddgkxhethxmrlvcwa --schema public,vacation > src/types/supabase.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
