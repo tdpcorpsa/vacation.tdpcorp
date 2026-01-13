@@ -1,6 +1,6 @@
 'use client'
 
-import { User, Lock, Users, LayoutGrid, Shield, Key } from 'lucide-react'
+import { Users, Calendar, FileText, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -31,27 +31,27 @@ type MenuItem = {
 
 const menuItems: MenuItem[] = [
   {
-    title: 'Item',
-    url: '/',
-    icon: User,
+    title: 'Empleados',
+    url: '/employees',
+    icon: Users,
   },
   {
-    title: 'Item 2',
-    url: '/item-2',
-    icon: Lock,
+    title: 'Solicitudes',
+    url: '/vacation-requests',
+    icon: FileText,
+  },
+  {
+    title: 'Periodos',
+    url: '/vacation-periods',
+    icon: Calendar,
   },
 ]
 
 const Menu2Items: MenuItem[] = [
   {
-    title: 'Item 3',
-    url: '/item-3',
-    icon: Users,
-  },
-  {
-    title: 'Item 4',
-    url: '/item-4',
-    icon: LayoutGrid,
+    title: 'Regímenes Laborales',
+    url: '/labor-regimes',
+    icon: Briefcase,
   },
 ]
 
