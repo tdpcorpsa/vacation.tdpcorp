@@ -64,7 +64,7 @@ export function RequestsForm() {
             {...register('vacation_period_id')}
           >
             <option value="">Seleccione un periodo</option>
-            {periods?.map((period) => (
+            {periods?.data?.map((period) => (
               <option key={period.id} value={period.id}>
                 {period.period_label} ({period.available_days} días disponibles)
               </option>
