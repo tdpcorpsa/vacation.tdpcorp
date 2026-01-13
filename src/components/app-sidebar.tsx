@@ -48,7 +48,7 @@ const menuItems: MenuItem[] = [
   },
   {
     title: 'Solicitudes',
-    url: '/vacation-requests',
+    url: '/requests',
     icon: FileText,
   },
   {
