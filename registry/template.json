@@ -1,0 +1,42 @@
+{
+  "name": "tpd-template",
+  "description": "Plantilla profesional de TDP Corp con Next.js, Supabase Auth y shadcn/ui",
+  "version": "0.1.0",
+  "author": "TDP Corp",
+  "license": "MIT",
+  "repository": "https://github.com/tdpcorp/tpd-template",
+  "features": [
+    "Next.js 15 con App Router",
+    "TypeScript",
+    "Tailwind CSS v4",
+    "shadcn/ui components",
+    "Supabase Auth",
+    "React Hook Form + Zod",
+    "React Query",
+    "Zustand (state management)",
+    "ESLint + Prettier"
+  ],
+  "structure": {
+    "src/app/(auth)/": "Rutas protegidas que requieren autenticación",
+    "src/components/ui/": "Componentes UI reutilizables de shadcn",
+    "src/components/<feature>/": "Componentes específicos por feature",
+    "src/lib/supabase/": "Configuración de Supabase",
+    "src/hooks/": "Hooks personalizados",
+    "src/types/": "Definiciones de tipos TypeScript",
+    "src/schemas/": "Esquemas de validación con Zod"
+  },
+  "conventions": {
+    "forms": "react-hook-form + zod validation",
+    "state": "zustand para estado global",
+    "data_fetching": "@tanstack/react-query",
+    "styling": "tailwindcss + shadcn/ui",
+    "auth": "supabase auth con middleware"
+  },
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --ext .ts,.tsx"
+  }
+}

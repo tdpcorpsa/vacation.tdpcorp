@@ -1,0 +1,107 @@
+{
+  "alert": {
+    "name": "alert",
+    "description": "Componente de alerta para mostrar mensajes importantes",
+    "dependencies": [
+      "@radix-ui/react-slot",
+      "class-variance-authority",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "devDependencies": [],
+    "registryDependencies": [],
+    "files": [
+      {
+        "name": "alert.tsx",
+        "content": "src/components/ui/alert.tsx"
+      }
+    ],
+    "type": "components:ui"
+  },
+  "button": {
+    "name": "button",
+    "description": "Componente de botón con múltiples variantes y tamaños",
+    "dependencies": [
+      "@radix-ui/react-slot",
+      "class-variance-authority",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "devDependencies": [],
+    "registryDependencies": [],
+    "files": [
+      {
+        "name": "button.tsx",
+        "content": "src/components/ui/button.tsx"
+      }
+    ],
+    "type": "components:ui"
+  },
+  "form": {
+    "name": "form",
+    "description": "Componentes de formulario integrados con react-hook-form",
+    "dependencies": [
+      "@radix-ui/react-label",
+      "@radix-ui/react-slot",
+      "react-hook-form",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "devDependencies": [],
+    "registryDependencies": ["label"],
+    "files": [
+      {
+        "name": "form.tsx",
+        "content": "src/components/ui/form.tsx"
+      }
+    ],
+    "type": "components:ui"
+  },
+  "input": {
+    "name": "input",
+    "description": "Componente de input con estilos personalizados",
+    "dependencies": ["clsx", "tailwind-merge"],
+    "devDependencies": [],
+    "registryDependencies": [],
+    "files": [
+      {
+        "name": "input.tsx",
+        "content": "src/components/ui/input.tsx"
+      }
+    ],
+    "type": "components:ui"
+  },
+  "label": {
+    "name": "label",
+    "description": "Componente de etiqueta para formularios",
+    "dependencies": [
+      "@radix-ui/react-label",
+      "class-variance-authority",
+      "clsx",
+      "tailwind-merge"
+    ],
+    "devDependencies": [],
+    "registryDependencies": [],
+    "files": [
+      {
+        "name": "label.tsx",
+        "content": "src/components/ui/label.tsx"
+      }
+    ],
+    "type": "components:ui"
+  },
+  "sonner": {
+    "name": "sonner",
+    "description": "Componente de toast/notificaciones usando Sonner",
+    "dependencies": ["sonner", "next-themes"],
+    "devDependencies": [],
+    "registryDependencies": [],
+    "files": [
+      {
+        "name": "sonner.tsx",
+        "content": "src/components/ui/sonner.tsx"
+      }
+    ],
+    "type": "components:ui"
+  }
+}
