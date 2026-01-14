@@ -1,0 +1,28 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
+import { toast } from 'sonner'
+
+export function useEmployeesDelete() {
+  const supabase = createClient()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .schema('vacation')
+        .from('employees')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw new Error(error.message)
+    },
+    onSuccess: () => {
+      toast.success('Empleado eliminado correctamente')
+      queryClient.invalidateQueries({ queryKey: ['employees'] })
+      queryClient.invalidateQueries({ queryKey: ['potential_employees'] })
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
+}
