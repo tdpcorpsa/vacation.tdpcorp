@@ -9,6 +9,11 @@ import { PageHeader } from '@/components/ui/page-header'
 
 const demos = [
   {
+    title: 'Dashboard',
+    href: '/demo/dashboard',
+    description: 'Dashboard principal de vacaciones con KPIs y solicitudes.',
+  },
+  {
     title: 'Alert Confirmation',
     href: '/demo/alert-confirmation',
     description: 'Diálogos de confirmación con diferentes variantes.',
