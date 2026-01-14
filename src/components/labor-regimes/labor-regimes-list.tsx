@@ -24,6 +24,9 @@ import { SearchInput } from '@/components/ui/search-input'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { AlertCircle } from 'lucide-react'
+import { SelectView, useView } from '@/components/ui/select-view'
+import { LaborRegimeCard } from './labor-regimes-card'
+import { LaborRegimeItem } from './labor-regimes-item'
 
 type LaborRegime = Tables<{ schema: 'vacation' }, 'labor_regime'>
 
@@ -61,6 +64,7 @@ const columns: ColumnDef<LaborRegime>[] = [
 export function LaborRegimesList() {
   const { page, pageSize, setPage, setPageSize } = usePagination()
   const [search] = useSearchQuery()
+  const [view] = useView()
 
   const { data, isPending, error } = useLaborRegimesList({
     pagination: { page, pageSize },
@@ -93,60 +97,89 @@ export function LaborRegimesList() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <SearchInput />
+      <div className="flex items-center justify-between gap-4">
+        <SearchInput className="flex-1" />
+        <SelectView />
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+      {view === 'table' && (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No hay resultados.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      {view === 'list' && (
+        <div className="space-y-4">
+          {data?.data.map((item) => (
+            <LaborRegimeItem key={item.id} item={item} />
+          ))}
+          {!data?.data.length && (
+            <div className="text-center py-8 text-muted-foreground">
+              No hay resultados.
+            </div>
+          )}
+        </div>
+      )}
+
+      {view === 'grid' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {data?.data.map((item) => (
+            <LaborRegimeCard key={item.id} item={item} />
+          ))}
+          {!data?.data.length && (
+            <div className="col-span-full text-center py-8 text-muted-foreground">
+              No hay resultados.
+            </div>
+          )}
+        </div>
+      )}
 
       <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
     </div>

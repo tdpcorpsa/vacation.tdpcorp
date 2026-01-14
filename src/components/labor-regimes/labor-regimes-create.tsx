@@ -30,19 +30,6 @@ export function LaborRegimeCreate() {
       name: '',
       days: 30,
       is_active: true,
-      policies: {
-        block_a: {
-          enabled: true,
-          days: 15,
-          allowed_durations: [7, 8, 15],
-          required_weekends: [1, 2],
-        },
-        block_b: {
-          enabled: true,
-          enable_single_days: true,
-          required_weekends: 2,
-        },
-      },
     },
   })
 

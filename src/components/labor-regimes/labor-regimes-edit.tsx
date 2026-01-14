@@ -41,7 +41,6 @@ export function LaborRegimeEdit({
       name: item.name,
       days: item.days,
       is_active: item.is_active,
-      policies: item.policies as any, // Cast to any because Json type is too broad
     },
   })
 
@@ -51,7 +50,6 @@ export function LaborRegimeEdit({
         name: item.name,
         days: item.days,
         is_active: item.is_active,
-        policies: item.policies as any,
       })
     }
   }, [item, form, open])
