@@ -238,9 +238,7 @@ export default function HRDashboard() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {mockHRKPIs.totalRequests}
-            </div>
+            <div className="text-2xl font-bold">{mockHRKPIs.totalRequests}</div>
             <p className="text-xs text-muted-foreground">Histórico total</p>
           </CardContent>
         </Card>
@@ -254,9 +252,7 @@ export default function HRDashboard() {
             <div className="text-2xl font-bold text-yellow-600">
               {mockHRKPIs.pendingRequests}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Requieren atención
-            </p>
+            <p className="text-xs text-muted-foreground">Requieren atención</p>
           </CardContent>
         </Card>
 
@@ -287,9 +283,7 @@ export default function HRDashboard() {
             <div className="text-2xl font-bold text-blue-600">
               {mockHRKPIs.avgDecisionTimeHours}h
             </div>
-            <p className="text-xs text-muted-foreground">
-              SLA de decisión
-            </p>
+            <p className="text-xs text-muted-foreground">SLA de decisión</p>
           </CardContent>
         </Card>
 
@@ -302,9 +296,7 @@ export default function HRDashboard() {
             <div className="text-2xl font-bold text-red-600">
               {mockHRKPIs.rejectedRequests}
             </div>
-            <p className="text-xs text-muted-foreground">
-              Total rechazadas
-            </p>
+            <p className="text-xs text-muted-foreground">Total rechazadas</p>
           </CardContent>
         </Card>
       </div>
@@ -459,7 +451,10 @@ export default function HRDashboard() {
                       <TableCell className="max-w-[200px]">
                         <div className="flex flex-col gap-1">
                           {req.request_note && (
-                            <p className="text-xs truncate" title={req.request_note}>
+                            <p
+                              className="text-xs truncate"
+                              title={req.request_note}
+                            >
                               <span className="font-semibold">Req:</span>{' '}
                               {req.request_note}
                             </p>
@@ -580,7 +575,10 @@ export default function HRDashboard() {
                             De Vacaciones
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+                          <Badge
+                            variant="outline"
+                            className="text-green-600 border-green-200 bg-green-50"
+                          >
                             Activo
                           </Badge>
                         )}
@@ -669,8 +667,8 @@ export default function HRDashboard() {
                                     percentage > 80
                                       ? 'bg-red-500'
                                       : percentage > 50
-                                      ? 'bg-yellow-500'
-                                      : 'bg-green-500'
+                                        ? 'bg-yellow-500'
+                                        : 'bg-green-500'
                                   )}
                                   style={{ width: `${percentage}%` }}
                                 />
@@ -757,9 +755,7 @@ export default function HRDashboard() {
                     className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                   >
                     <div className="flex flex-col items-center justify-center h-12 w-12 rounded bg-primary/10 text-primary font-bold text-xs">
-                      <span>
-                        {new Date(req.start_date).getDate()}
-                      </span>
+                      <span>{new Date(req.start_date).getDate()}</span>
                       <span className="uppercase text-[10px]">
                         {new Date(req.start_date).toLocaleString('es-ES', {
                           month: 'short',
@@ -772,8 +768,7 @@ export default function HRDashboard() {
                         {req.employee.profile.last_name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {req.total_days} días · Hasta{' '}
-                        {formatDate(req.end_date)}
+                        {req.total_days} días · Hasta {formatDate(req.end_date)}
                       </p>
                       <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                         <Building2 className="h-3 w-3" />
@@ -785,8 +780,7 @@ export default function HRDashboard() {
             </div>
             {mockHRRequests.filter(
               (r) =>
-                r.status === 'APPROVED' &&
-                new Date(r.start_date) > new Date()
+                r.status === 'APPROVED' && new Date(r.start_date) > new Date()
             ).length === 0 && (
               <div className="text-center py-10 text-muted-foreground">
                 No hay vacaciones futuras programadas.
@@ -802,9 +796,7 @@ export default function HRDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Actividad Reciente</CardTitle>
-              <CardDescription>
-                Últimos cambios en solicitudes.
-              </CardDescription>
+              <CardDescription>Últimos cambios en solicitudes.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -885,8 +877,7 @@ export default function HRDashboard() {
                         </p>
                         <p className="text-xs text-muted-foreground">
                           Creado por{' '}
-                          {req.created_by_user?.id ===
-                          req.employee.profile.id
+                          {req.created_by_user?.id === req.employee.profile.id
                             ? 'el empleado'
                             : 'RRHH'}{' '}
                           · {formatDateTime(req.created_at)}

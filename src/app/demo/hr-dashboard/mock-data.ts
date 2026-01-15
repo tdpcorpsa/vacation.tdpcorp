@@ -129,8 +129,7 @@ const generateEmployees = (count: number): HREmployee[] => {
         ? employees[Math.floor(Math.random() * Math.min(i, 5))] // Pick from top 5 created
         : undefined
 
-    const regime =
-      mockRegimes[Math.floor(Math.random() * mockRegimes.length)]
+    const regime = mockRegimes[Math.floor(Math.random() * mockRegimes.length)]
 
     const profile: ProfileRow = {
       id: `user_${id}`,
@@ -211,8 +210,7 @@ const generateRequests = (
   for (let i = 0; i < count; i++) {
     const emp = employees[Math.floor(Math.random() * employees.length)]
     // Find a period for this employee
-    const period =
-      periods.find((p) => p.employee_id === emp.id) || periods[0]
+    const period = periods.find((p) => p.employee_id === emp.id) || periods[0]
 
     const statusOptions: ('PENDING' | 'APPROVED' | 'REJECTED')[] = [
       'PENDING',
@@ -295,9 +293,7 @@ export const mockHRRequests = generateRequests(
 // ------------------------------------------------------------------
 
 export const getAvgDecisionTime = (requests: HRVacationRequest[]) => {
-  const decided = requests.filter(
-    (r) => r.decided_at && r.submitted_at
-  )
+  const decided = requests.filter((r) => r.decided_at && r.submitted_at)
   if (decided.length === 0) return 0
   const totalHours = decided.reduce((acc, r) => {
     const start = new Date(r.submitted_at).getTime()
@@ -307,7 +303,10 @@ export const getAvgDecisionTime = (requests: HRVacationRequest[]) => {
   return Math.round(totalHours / decided.length)
 }
 
-export const getBacklogCount = (requests: HRVacationRequest[], days: number) => {
+export const getBacklogCount = (
+  requests: HRVacationRequest[],
+  days: number
+) => {
   const now = new Date() // Current date simulation
   return requests.filter((r) => {
     if (r.status !== 'PENDING') return false
