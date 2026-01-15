@@ -24,10 +24,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { NavUser } from '@/components/profile/user-nav'
-import AppListMenu from './apps/app-list-menu'
 import { useAppContext } from '@/providers/app-provider'
-import { Avatar, AvatarFallback } from './ui/avatar'
-import useProfile from '@/hooks/auth/use-profile'
 
 type MenuItem = {
   title: string
@@ -48,7 +45,7 @@ const menuItems: MenuItem[] = [
   },
   {
     title: 'Solicitudes',
-    url: '/requests',
+    url: '/vacation-requests',
     icon: FileText,
   },
   {
@@ -68,20 +65,10 @@ const Menu2Items: MenuItem[] = [
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const { data: profile } = useProfile()
   const { currentApp } = useAppContext()
   const { state } = useSidebar()
 
   const isCollapsed = state === 'collapsed'
-
-  // Preparar los datos del usuario para el componente NavUser
-  const userData = {
-    name:
-      `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() ||
-      'Usuario',
-    email: profile?.email || '',
-    avatar: profile?.avatar_url || '',
-  }
 
   return (
     <Sidebar collapsible="icon">
@@ -95,45 +82,25 @@ export function AppSidebar() {
                 tooltip={currentApp?.name || 'TDP Corp'}
               >
                 <Link href="/">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/logos/ISOTIPO.svg"
                     alt={currentApp?.name || 'Logo'}
-                    className="h-8 w-8 object-contain"
+                    className="size-8"
                   />
                 </Link>
               </SidebarMenuButton>
             </div>
           ) : (
-            // Expanded: Logo completo y app info
-            <>
-              <div className="flex items-center justify-between gap-3 mb-3">
-                {/* Logo */}
-                <div className="flex-shrink-0">
-                  <img
-                    src="/logos/LOGOTIPO.svg"
-                    alt={currentApp?.name || 'Logo'}
-                    className="h-8 w-auto object-contain"
-                  />
-                </div>
-
-                {/* App menu button */}
-                <AppListMenu />
-              </div>
-
-              {/* App name with subtle background */}
-              <div className="bg-sidebar-accent/30 rounded-lg px-3 py-1 border border-sidebar-border/50">
-                <div className="flex items-center gap-2">
-                  <Avatar>
-                    <AvatarFallback>
-                      {currentApp?.name?.[0] || ''}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium text-sidebar-foreground">
-                    {currentApp?.name || 'TDP Corp'}
-                  </span>
-                </div>
-              </div>
-            </>
+            // Expanded: Logo completo
+            <Link href="/" className="block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logos/LOGOTIPO.svg"
+                alt={currentApp?.name || 'Logo'}
+                className="h-8 w-auto"
+              />
+            </Link>
           )}
         </div>
       </SidebarHeader>

@@ -30,7 +30,11 @@ export const useEmployeesList = () => {
         const profile = profiles?.find((p) => p.id === emp.id)
         return {
           ...emp,
-          profile: profile || { first_name: 'Desconocido', last_name: '', email: '' },
+          profile: profile || {
+            first_name: 'Desconocido',
+            last_name: '',
+            email: '',
+          },
         }
       })
 

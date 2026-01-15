@@ -1,7 +1,12 @@
 'use client'
 
 import { useEmployeesList } from '@/hooks/employees/use-employees-list'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { useFormContext } from 'react-hook-form'
 
@@ -26,7 +31,8 @@ export function VacationPeriodsForm() {
             <option value="">Seleccione un empleado</option>
             {employees?.map((employee) => (
               <option key={employee.id} value={employee.id}>
-                {employee.profile.first_name} {employee.profile.last_name} ({employee.profile.email})
+                {employee.profile.first_name} {employee.profile.last_name} (
+                {employee.profile.email})
               </option>
             ))}
           </select>
@@ -50,11 +56,7 @@ export function VacationPeriodsForm() {
         <Field>
           <FieldLabel htmlFor="start_date">Fecha Inicio</FieldLabel>
           <FieldContent>
-            <Input
-              id="start_date"
-              type="date"
-              {...register('start_date')}
-            />
+            <Input id="start_date" type="date" {...register('start_date')} />
             <FieldError errors={[errors.start_date]} />
           </FieldContent>
         </Field>
@@ -62,11 +64,7 @@ export function VacationPeriodsForm() {
         <Field>
           <FieldLabel htmlFor="end_date">Fecha Fin</FieldLabel>
           <FieldContent>
-            <Input
-              id="end_date"
-              type="date"
-              {...register('end_date')}
-            />
+            <Input id="end_date" type="date" {...register('end_date')} />
             <FieldError errors={[errors.end_date]} />
           </FieldContent>
         </Field>
@@ -79,7 +77,8 @@ export function VacationPeriodsForm() {
             <Input
               id="total_days"
               type="number"
-              {...register('total_days')}
+              min={0}
+              {...register('total_days', { valueAsNumber: true })}
             />
             <FieldError errors={[errors.total_days]} />
           </FieldContent>
@@ -91,7 +90,8 @@ export function VacationPeriodsForm() {
             <Input
               id="available_days"
               type="number"
-              {...register('available_days')}
+              min={0}
+              {...register('available_days', { valueAsNumber: true })}
             />
             <FieldError errors={[errors.available_days]} />
           </FieldContent>

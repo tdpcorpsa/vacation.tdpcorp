@@ -1,6 +1,5 @@
 import { PaginationGroup } from '@/components/ui/pagination-group'
 import { PageHeader } from '@/components/ui/page-header'
-import { BookOpen } from 'lucide-react'
 import { Suspense } from 'react'
 
 export default function DemoPaginationGroup() {

@@ -1,13 +1,13 @@
 'use client'
 
-import { RequestsCreate } from '@/components/requests/requests-create'
-import { RequestsList } from '@/components/requests/requests-list'
+import { VacationRequestsCreate } from '@/components/vacation-requests/vacation-requests-create'
+import { VacationRequestsList } from '@/components/vacation-requests/vacation-requests-list'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/ui/page-header'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 
-export default function RequestsPage() {
+export default function VacationRequestsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false)
 
   return (
@@ -23,8 +23,11 @@ export default function RequestsPage() {
         }
       />
       <div className="container mx-auto p-4 pt-0">
-        <RequestsList />
-        <RequestsCreate open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+        <VacationRequestsList />
+        <VacationRequestsCreate
+          open={isCreateOpen}
+          onOpenChange={setIsCreateOpen}
+        />
       </div>
     </div>
   )

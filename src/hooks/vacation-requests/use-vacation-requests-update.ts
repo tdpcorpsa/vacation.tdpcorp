@@ -1,11 +1,11 @@
 'use client'
 
 import { supabase } from '@/lib/supabase/client'
-import { RequestSchemaType } from '@/schemas/requests.schema'
+import { VacationRequestSchemaType } from '@/schemas/vacation-requests.schema'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-export const useRequestsUpdate = () => {
+export const useVacationRequestsUpdate = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -14,7 +14,7 @@ export const useRequestsUpdate = () => {
       data,
     }: {
       id: string
-      data: RequestSchemaType
+      data: VacationRequestSchemaType
     }) => {
       const { error } = await supabase
         .schema('vacation')
@@ -29,7 +29,7 @@ export const useRequestsUpdate = () => {
     },
     onSuccess: () => {
       toast.success('Solicitud actualizada correctamente')
-      queryClient.invalidateQueries({ queryKey: ['requests'] })
+      queryClient.invalidateQueries({ queryKey: ['vacation-requests'] })
     },
     onError: (error) => {
       toast.error('Error al actualizar la solicitud: ' + error.message)

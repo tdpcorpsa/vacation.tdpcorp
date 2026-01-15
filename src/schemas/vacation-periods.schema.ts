@@ -9,8 +9,12 @@ export const VacationPeriodSchema = z.object({
   end_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: 'Fecha de fin inválida',
   }),
-  total_days: z.coerce.number().min(0, 'Los días totales deben ser mayor o igual a 0'),
-  available_days: z.coerce.number().min(0, 'Los días disponibles deben ser mayor o igual a 0'),
+  total_days: z.coerce
+    .number()
+    .min(0, 'Los días totales deben ser mayor o igual a 0'),
+  available_days: z.coerce
+    .number()
+    .min(0, 'Los días disponibles deben ser mayor o igual a 0'),
 })
 
 export type VacationPeriodFormValues = z.infer<typeof VacationPeriodSchema>

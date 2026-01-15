@@ -32,6 +32,7 @@ export function VacationPeriodsEdit({
 }: VacationPeriodsEditProps) {
   const { mutate, isPending } = useVacationPeriodsUpdate()
   const form = useForm<VacationPeriodFormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(VacationPeriodSchema) as any,
     defaultValues: {
       employee_id: vacationPeriod.employee_id,
@@ -92,10 +93,7 @@ export function VacationPeriodsEdit({
               >
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                disabled={isPending}
-              >
+              <Button type="submit" disabled={isPending}>
                 {isPending ? 'Guardando...' : 'Guardar'}
               </Button>
             </div>

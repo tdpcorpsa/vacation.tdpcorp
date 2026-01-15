@@ -3,7 +3,7 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 
-interface UseRequestsListProps {
+interface UseVacationRequestsListProps {
   pagination: {
     page: number
     pageSize: number
@@ -11,16 +11,22 @@ interface UseRequestsListProps {
   search?: string
 }
 
-export const useRequestsList = ({ pagination, search }: UseRequestsListProps) => {
+export const useVacationRequestsList = ({
+  pagination,
+  search,
+}: UseVacationRequestsListProps) => {
   return useQuery({
-    queryKey: ['requests', pagination, search],
+    queryKey: ['vacation-requests', pagination, search],
     queryFn: async () => {
       let query = supabase
         .schema('vacation')
         .from('vacation_requests')
-        .select('*, employee:employees(*), vacation_period:vacation_periods(*)', {
-          count: 'exact',
-        })
+        .select(
+          '*, employee:employees(*), vacation_period:vacation_periods(*)',
+          {
+            count: 'exact',
+          }
+        )
         .range(
           (pagination.page - 1) * pagination.pageSize,
           pagination.page * pagination.pageSize - 1

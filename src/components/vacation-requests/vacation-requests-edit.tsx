@@ -1,8 +1,11 @@
 'use client'
 
-import { RequestsForm } from './requests-form'
-import { useRequestsUpdate } from '@/hooks/requests/use-requests-update'
-import { RequestSchema, RequestSchemaType } from '@/schemas/requests.schema'
+import { VacationRequestsForm } from './vacation-requests-form'
+import { useVacationRequestsUpdate } from '@/hooks/vacation-requests/use-vacation-requests-update'
+import {
+  VacationRequestSchema,
+  VacationRequestSchemaType,
+} from '@/schemas/vacation-requests.schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
@@ -18,26 +21,44 @@ import { Form } from '@/components/ui/form'
 import { useEffect } from 'react'
 import { Tables } from '@/types/supabase.types'
 
-interface RequestsEditProps {
+interface VacationRequestsEditProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   request?: Tables<{ schema: 'vacation' }, 'vacation_requests'>
 }
 
-export function RequestsEdit({
+export function VacationRequestsEdit({
   open,
   onOpenChange,
   request,
-}: RequestsEditProps) {
-  const { mutate, isPending } = useRequestsUpdate()
+}: VacationRequestsEditProps) {
+  const { mutate, isPending } = useVacationRequestsUpdate()
 
-  const form = useForm<RequestSchemaType>({
-    resolver: zodResolver(RequestSchema),
+  const form = useForm<VacationRequestSchemaType>({
+    resolver: zodResolver(VacationRequestSchema),
+    defaultValues: request
+      ? {
+          employee_id: request.employee_id,
+          start_date: request.start_date,
+          end_date: request.end_date,
+          request_note: request.request_note || '',
+          vacation_period_id: request.vacation_period_id,
+          total_days: request.total_days,
+        }
+      : {
+          employee_id: '',
+          start_date: '',
+          end_date: '',
+          request_note: '',
+          vacation_period_id: '',
+          total_days: 1,
+        },
   })
 
   useEffect(() => {
     if (request && open) {
       form.reset({
+        employee_id: request.employee_id,
         start_date: request.start_date,
         end_date: request.end_date,
         request_note: request.request_note || '',
@@ -47,7 +68,7 @@ export function RequestsEdit({
     }
   }, [request, open, form])
 
-  const onSubmit = (data: RequestSchemaType) => {
+  const onSubmit = (data: VacationRequestSchemaType) => {
     if (!request) return
 
     mutate(
@@ -77,7 +98,7 @@ export function RequestsEdit({
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4 py-4 px-4"
           >
-            <RequestsForm />
+            <VacationRequestsForm />
             <SheetFooter className="px-0">
               <Button type="submit" disabled={isPending} className="w-full">
                 {isPending ? 'Guardando...' : 'Guardar'}

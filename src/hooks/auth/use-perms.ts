@@ -16,6 +16,7 @@ export default function usePerms() {
     const appPerm = profile?.roles
       ?.flatMap((role) => role?.app_perms || [])
       ?.find((item) => item?.subdomain === subdomain)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (appPerm as any)?.[resource]?.[action] === true
   }
 

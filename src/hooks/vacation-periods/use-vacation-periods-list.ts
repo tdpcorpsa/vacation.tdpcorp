@@ -9,14 +9,16 @@ type UseVacationPeriodsListProps = {
     pageSize: number
   }
   search?: string
+  employeeId?: string
 }
 
 export const useVacationPeriodsList = ({
   pagination = { page: 1, pageSize: 100 },
   search,
+  employeeId,
 }: UseVacationPeriodsListProps = {}) => {
   return useQuery({
-    queryKey: ['vacation-periods', pagination, search],
+    queryKey: ['vacation-periods', pagination, search, employeeId],
     queryFn: async () => {
       let query = supabase
         .schema('vacation')
@@ -25,6 +27,10 @@ export const useVacationPeriodsList = ({
 
       if (search) {
         query = query.ilike('period_label', `%${search}%`)
+      }
+
+      if (employeeId) {
+        query = query.eq('employee_id', employeeId)
       }
 
       const from = (pagination.page - 1) * pagination.pageSize

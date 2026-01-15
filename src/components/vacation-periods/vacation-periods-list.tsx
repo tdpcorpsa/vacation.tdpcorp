@@ -36,7 +36,9 @@ export function VacationPeriodsList() {
     search,
   })
 
-  const columns: ColumnDef<Tables<{ schema: 'vacation' }, 'vacation_periods'>>[] = [
+  const columns: ColumnDef<
+    Tables<{ schema: 'vacation' }, 'vacation_periods'>
+  >[] = [
     {
       accessorKey: 'period_label',
       header: 'Periodo',
@@ -65,7 +67,9 @@ export function VacationPeriodsList() {
     },
     {
       id: 'actions',
-      cell: ({ row }) => <VacationPeriodsActions vacationPeriod={row.original} />,
+      cell: ({ row }) => (
+        <VacationPeriodsActions vacationPeriod={row.original} />
+      ),
     },
   ]
 
@@ -187,8 +191,8 @@ export function VacationPeriodsList() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-sm">
-                      <span className="font-bold">{period.available_days}</span> /{' '}
-                      {period.total_days} días
+                      <span className="font-bold">{period.available_days}</span>{' '}
+                      / {period.total_days} días
                     </div>
                     <VacationPeriodsActions vacationPeriod={period} />
                   </div>

@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-export const useRequestsDelete = () => {
+export const useVacationRequestsDelete = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -19,7 +19,7 @@ export const useRequestsDelete = () => {
     },
     onSuccess: () => {
       toast.success('Solicitud eliminada correctamente')
-      queryClient.invalidateQueries({ queryKey: ['requests'] })
+      queryClient.invalidateQueries({ queryKey: ['vacation-requests'] })
     },
     onError: (error) => {
       toast.error('Error al eliminar la solicitud: ' + error.message)

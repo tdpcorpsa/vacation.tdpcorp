@@ -1,21 +1,21 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { useRequestsDelete } from '@/hooks/requests/use-requests-delete'
+import { useVacationRequestsDelete } from '@/hooks/vacation-requests/use-vacation-requests-delete'
 import { Tables } from '@/types/supabase.types'
 
-interface RequestsDeleteProps {
+interface VacationRequestsDeleteProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   request?: Tables<{ schema: 'vacation' }, 'vacation_requests'>
 }
 
-export function RequestsDelete({
+export function VacationRequestsDelete({
   open,
   onOpenChange,
   request,
-}: RequestsDeleteProps) {
-  const { mutate } = useRequestsDelete()
+}: VacationRequestsDeleteProps) {
+  const { mutate } = useVacationRequestsDelete()
 
   if (!request) return null
 

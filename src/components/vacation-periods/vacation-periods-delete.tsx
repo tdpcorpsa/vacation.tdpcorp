@@ -14,7 +14,7 @@ export function VacationPeriodsDelete({
   onOpenChange,
   id,
 }: VacationPeriodsDeleteProps) {
-  const { mutate, isPending } = useVacationPeriodsDelete()
+  const { mutate } = useVacationPeriodsDelete()
 
   return (
     <AlertConfirmation

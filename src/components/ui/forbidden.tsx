@@ -28,6 +28,7 @@ export const ForbiddenDisabled = ({ children }: { children?: ReactNode }) => {
   if (!children) return null
   if (!isValidElement(children)) return null
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return cloneElement<any>(children, {
     disabled: true,
     onClick: undefined,
