@@ -38,7 +38,7 @@ type MenuItem = {
 const menuItems: MenuItem[] = [
   {
     title: 'Dashboard',
-    url: '/',
+    url: '/dashboard',
     icon: LayoutDashboard,
   },
   {
@@ -94,7 +94,7 @@ export function AppSidebar() {
                 asChild
                 tooltip={currentApp?.name || 'TDP Corp'}
               >
-                <Link href="/">
+                <Link href="/dashboard">
                   <img
                     src="/logos/ISOTIPO.svg"
                     alt={currentApp?.name || 'Logo'}
