@@ -14,6 +14,16 @@ const demos = [
     description: 'Dashboard principal de vacaciones con KPIs y solicitudes.',
   },
   {
+    title: 'Dashboard Jefe Directo',
+    href: '/demo/manager-dashboard',
+    description: 'Dashboard para gestión de equipo y aprobaciones.',
+  },
+  {
+    title: 'Dashboard RRHH',
+    href: '/demo/hr-dashboard',
+    description: 'Vista global de la organización para Recursos Humanos.',
+  },
+  {
     title: 'Alert Confirmation',
     href: '/demo/alert-confirmation',
     description: 'Diálogos de confirmación con diferentes variantes.',
