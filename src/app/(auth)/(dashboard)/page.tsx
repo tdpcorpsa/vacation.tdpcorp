@@ -1,5 +1,4 @@
 'use client'
-
 import * as React from 'react'
 import {
   Card,
@@ -38,21 +37,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { useDashboardData } from '@/hooks/dashboard/use-dashboard-data'
 import { useHrDashboardData } from '@/hooks/dashboard/use-hr-dashboard-data'
-import { EmployeeInfoCard } from '@/components/apps/dashboard/employee-info-card'
+import { EmployeeInfoCard } from '@/components/dashboard/employee-info-card'
 import {
   PeriodSummaryCard,
   PeriodTotals,
-} from '@/components/apps/dashboard/period-summary-card'
-import { UpcomingVacationsCard } from '@/components/apps/dashboard/upcoming-vacations-card'
+} from '@/components/dashboard/period-summary-card'
+import { UpcomingVacationsCard } from '@/components/dashboard/upcoming-vacations-card'
 import {
   RequestsSummaryCard,
   StatusFilter,
-} from '@/components/apps/dashboard/requests-summary-card'
-import { RequestsList } from '@/components/apps/dashboard/requests-list'
-import {
-  getStatusColor,
-  getStatusLabel,
-} from '@/components/apps/dashboard/utils'
+} from '@/components/dashboard/requests-summary-card'
+import { RequestsList } from '@/components/dashboard/requests-list'
+import { getStatusColor, getStatusLabel } from '@/components/dashboard/utils'
 import {
   PaginationGroup,
   usePagination,
