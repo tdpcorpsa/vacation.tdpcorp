@@ -94,20 +94,20 @@ export function EmployeesList() {
                         <TableCell className="flex items-center gap-2">
                           <Avatar className="h-8 w-8">
                             <AvatarImage
-                              src={employee.user?.avatar_url || ''}
+                              src={employee.profile?.avatar_url || ''}
                             />
                             <AvatarFallback>
-                              {employee.user?.first_name?.[0]}
-                              {employee.user?.last_name?.[0]}
+                              {employee.profile?.first_name?.[0]}
+                              {employee.profile?.last_name?.[0]}
                             </AvatarFallback>
                           </Avatar>
                           <div>
                             <div className="font-medium">
-                              {employee.user?.first_name}{' '}
-                              {employee.user?.last_name}
+                              {employee.profile?.first_name}{' '}
+                              {employee.profile?.last_name}
                             </div>
-                            <div className="text-xs text-muted-foreground">
-                              {employee.user?.email}
+                            <div className="text-sm text-muted-foreground">
+                              {employee.profile?.email}
                             </div>
                           </div>
                         </TableCell>
@@ -139,19 +139,22 @@ export function EmployeesList() {
                     <div className="flex items-center gap-4">
                       <ItemMedia>
                         <Avatar>
-                          <AvatarImage src={employee.user?.avatar_url || ''} />
+                          <AvatarImage
+                            src={employee.profile?.avatar_url || ''}
+                          />
                           <AvatarFallback>
-                            {employee.user?.first_name?.[0]}
-                            {employee.user?.last_name?.[0]}
+                            {employee.profile?.first_name?.[0]}
+                            {employee.profile?.last_name?.[0]}
                           </AvatarFallback>
                         </Avatar>
                       </ItemMedia>
                       <div>
                         <div className="font-medium">
-                          {employee.user?.first_name} {employee.user?.last_name}
+                          {employee.profile?.first_name}{' '}
+                          {employee.profile?.last_name}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {employee.user?.email}
+                          {employee.profile?.email}
                         </div>
                       </div>
                     </div>
@@ -176,22 +179,25 @@ export function EmployeesList() {
                   <Card key={employee.id}>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        {employee.user?.first_name} {employee.user?.last_name}
+                        {employee.profile?.first_name}{' '}
+                        {employee.profile?.last_name}
                       </CardTitle>
                       <EmployeesActions employee={employee} />
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center gap-4 py-4">
                         <Avatar className="h-16 w-16">
-                          <AvatarImage src={employee.user?.avatar_url || ''} />
+                          <AvatarImage
+                            src={employee.profile?.avatar_url || ''}
+                          />
                           <AvatarFallback>
-                            {employee.user?.first_name?.[0]}
-                            {employee.user?.last_name?.[0]}
+                            {employee.profile?.first_name?.[0]}
+                            {employee.profile?.last_name?.[0]}
                           </AvatarFallback>
                         </Avatar>
                         <div className="space-y-1">
                           <p className="text-sm text-muted-foreground">
-                            {employee.user?.email}
+                            {employee.profile?.email}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             Ingreso:{' '}

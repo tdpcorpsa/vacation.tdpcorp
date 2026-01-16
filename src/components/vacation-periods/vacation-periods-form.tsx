@@ -29,7 +29,7 @@ export function VacationPeriodsForm() {
             {...register('employee_id')}
           >
             <option value="">Seleccione un empleado</option>
-            {employees?.map((employee) => (
+            {employees?.data?.map((employee) => (
               <option key={employee.id} value={employee.id}>
                 {employee.profile.first_name} {employee.profile.last_name} (
                 {employee.profile.email})
