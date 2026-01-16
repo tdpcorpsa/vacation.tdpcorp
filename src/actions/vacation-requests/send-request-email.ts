@@ -1,7 +1,15 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { Tables } from '@/types/supabase.types'
 import nodemailer from 'nodemailer'
+
+type VacationRequestWithEmployee = Tables<
+  { schema: 'vacation' },
+  'vacation_requests'
+> & {
+  employee: Tables<{ schema: 'vacation' }, 'employees'> | null
+}
 
 export async function sendRequestEmail(requestId: string) {
   const supabase = await createClient()
@@ -24,8 +32,8 @@ export async function sendRequestEmail(requestId: string) {
   // Sin embargo, typescript puede quejar. Lo trataremos con cuidado.
   // Mejor hacemos una consulta separada si es necesario, pero intentemos usar lo que tenemos.
 
-  // Tipado manual rápido para evitar conflictos si supabase types no infieren bien la relación anidada profunda
-  const employee = request.employee as any
+  const typedRequest = request as VacationRequestWithEmployee
+  const employee = typedRequest.employee
 
   if (!employee || !employee.manager_id) {
     throw new Error('El empleado no tiene un jefe asignado')
