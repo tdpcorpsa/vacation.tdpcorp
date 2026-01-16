@@ -13,6 +13,7 @@ export function applySupabaseSearch(
   fields?: string[],
   fieldWithReferencedTable?: FieldWithReferencedTable[]
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let q: any = query as any
   if (!search || !fields) return query
 
