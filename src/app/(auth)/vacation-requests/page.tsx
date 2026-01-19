@@ -6,29 +6,44 @@ import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/ui/page-header'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
+import { ProtectPage } from '@/components/auth/protect-page'
+import CanAccess from '@/components/ui/can-access'
 
 export default function VacationRequestsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false)
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader
-        title="Solicitudes de Vacaciones"
-        description="Gestione sus solicitudes de vacaciones."
-        actions={
-          <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Nueva Solicitud
-          </Button>
-        }
-      />
-      <div className="container mx-auto p-4 pt-0">
-        <VacationRequestsList />
-        <VacationRequestsCreate
-          open={isCreateOpen}
-          onOpenChange={setIsCreateOpen}
+    <ProtectPage
+      subdomain="vacation"
+      resource="vacation_requests"
+      action="read"
+    >
+      <div className="flex flex-col gap-4">
+        <PageHeader
+          title="Solicitudes de Vacaciones"
+          description="Gestione sus solicitudes de vacaciones."
+          actions={
+            <CanAccess
+              subdomain="vacation"
+              resource="vacation_requests"
+              action="create"
+              variant="hidden"
+            >
+              <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Nueva Solicitud
+              </Button>
+            </CanAccess>
+          }
         />
+        <div className="container mx-auto p-4 pt-0">
+          <VacationRequestsList />
+          <VacationRequestsCreate
+            open={isCreateOpen}
+            onOpenChange={setIsCreateOpen}
+          />
+        </div>
       </div>
-    </div>
+    </ProtectPage>
   )
 }

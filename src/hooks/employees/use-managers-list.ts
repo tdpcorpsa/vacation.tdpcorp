@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
