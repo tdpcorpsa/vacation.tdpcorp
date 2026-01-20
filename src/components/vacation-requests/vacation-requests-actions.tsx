@@ -15,6 +15,7 @@ import { useVacationRequestsSendEmail } from '@/hooks/vacation-requests/use-vaca
 import { Tables } from '@/types/supabase.types'
 import { Edit, Mail, MoreHorizontal, Trash } from 'lucide-react'
 import { useState } from 'react'
+import CanAccess from '@/components/ui/can-access'
 
 interface VacationRequestsActionsProps {
   request: Tables<{ schema: 'vacation' }, 'vacation_requests'>
@@ -48,10 +49,17 @@ export function VacationRequestsActions({
           <DropdownMenuSeparator />
           {isPending && (
             <>
-              <DropdownMenuItem onClick={() => setShowEdit(true)}>
-                <Edit className="mr-2 h-4 w-4" />
-                Editar
-              </DropdownMenuItem>
+              <CanAccess
+                subdomain="vacation"
+                resource="vacation_requests"
+                action="update"
+                variant="hidden"
+              >
+                <DropdownMenuItem onClick={() => setShowEdit(true)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Editar
+                </DropdownMenuItem>
+              </CanAccess>
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation()
@@ -64,15 +72,22 @@ export function VacationRequestsActions({
               </DropdownMenuItem>
             </>
           )}
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation()
-              setShowDelete(true)
-            }}
+          <CanAccess
+            subdomain="vacation"
+            resource="vacation_requests"
+            action="delete"
+            variant="hidden"
           >
-            <Trash className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowDelete(true)
+              }}
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

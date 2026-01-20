@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Item, ItemMedia, ItemSeparator } from '@/components/ui/item'
+import { Item, ItemMedia } from '@/components/ui/item'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'

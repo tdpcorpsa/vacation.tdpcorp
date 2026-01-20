@@ -45,7 +45,7 @@ export function EmployeesEdit({
     try {
       await updateMutation.mutateAsync(values)
       onOpenChange(false)
-    } catch (error) {
+    } catch (_) {
       // Error handled in hook
     }
   }

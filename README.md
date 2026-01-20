@@ -1,4 +1,4 @@
-# TDP Template 
+# TDP Template
 
 Plantilla oficial de TDP Corp que implementa estándares corporativos de desarrollo, siguiendo las mejores prácticas de la industria para garantizar consistencia, mantenibilidad y escalabilidad en todos los proyectos de la organización. Esta plantilla establece un marco de trabajo unificado que cumple con los lineamientos de arquitectura empresarial, patrones de diseño establecidos, y estándares de calidad de código definidos por TDP Corp.
 
