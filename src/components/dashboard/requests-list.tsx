@@ -107,13 +107,6 @@ export function RequestsList({
             Historial de solicitudes del periodo seleccionado.
           </CardDescription>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-muted-foreground hover:text-primary transition-transform duration-200 hover:translate-x-1"
-        >
-          Ver todo <ExternalLink className="ml-2 h-3 w-3" />
-        </Button>
       </CardHeader>
       <CardContent className="flex-1 overflow-x-auto">
         <Table>
