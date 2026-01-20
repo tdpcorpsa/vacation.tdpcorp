@@ -32,8 +32,8 @@ export function ProtectPage({
   }
 
   if (!hasAccess) {
-    return <Forbidden />
-  }
+          return <Forbidden />
+        }
 
   return <>{children}</>
 }
