@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button'
 import {
   addMonths,
   addDays,
-  endOfMonth,
   endOfWeek,
   format,
   startOfMonth,
   startOfWeek,
   subMonths,
+  endOfDay,
+  endOfMonth,
 } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -82,7 +83,7 @@ export function PlanningCalendar({
           id: req.id,
           title: `${req.employeeProfile?.first_name} ${req.employeeProfile?.last_name}`,
           start: parseLocalDate(req.start_date),
-          end: parseLocalDate(req.end_date),
+          end: endOfDay(parseLocalDate(req.end_date)),
           color: getEventColor(req.employee_id),
           original: req,
         }
@@ -92,7 +93,6 @@ export function PlanningCalendar({
   // Generar grid del mes
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(monthStart)
-  // Forzar inicio en Domingo para coincidir con la imagen (weekStartsOn: 0)
   const startDate = startOfWeek(monthStart, { weekStartsOn: 0 })
   const endDate = endOfWeek(monthEnd, { weekStartsOn: 0 })
 
@@ -103,7 +103,7 @@ export function PlanningCalendar({
     const weekStart = day
     const weekEnd = endOfWeek(day, { weekStartsOn: 0 })
     weeks.push({ start: weekStart, end: weekEnd })
-    day = addDays(weekEnd, 1)
+    day = addDays(day, 7)
   }
 
   const weekDays = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb']
@@ -140,9 +140,10 @@ export function PlanningCalendar({
           </Button>
         </div>
 
-        <h2 className="text-xl font-medium text-foreground capitalize">
-          {format(currentDate, 'MMMM', { locale: es })} of{' '}
-          {format(currentDate, 'yyyy')}
+        <h2 className="text-xl font-medium text-foreground">
+          {format(currentDate, 'MMMM', { locale: es }).charAt(0).toUpperCase() +
+            format(currentDate, 'MMMM', { locale: es }).slice(1)}{' '}
+          del {format(currentDate, 'yyyy')}
         </h2>
 
         {/* Placeholder div to maintain layout balance if needed, or just empty */}

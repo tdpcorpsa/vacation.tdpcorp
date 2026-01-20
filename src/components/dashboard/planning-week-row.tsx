@@ -8,6 +8,7 @@ import {
   isToday,
   max,
   min,
+  startOfDay,
 } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
@@ -50,10 +51,11 @@ export function WeekRow({
 
     // 2. Calcular posición horizontal (colStart, colSpan)
     const positioned: PositionedEvent[] = overlapping.map((evt) => {
-      const start = max([evt.start, weekStart])
-      const end = min([evt.end, weekEnd])
+      // Normalizamos a inicio del día para evitar problemas con horas (23:59 vs 00:00)
+      const start = startOfDay(max([evt.start, weekStart]))
+      const end = startOfDay(min([evt.end, weekEnd]))
 
-      const colStart = differenceInDays(start, weekStart)
+      const colStart = differenceInDays(start, startOfDay(weekStart))
       const colSpan = differenceInDays(end, start) + 1
 
       return {
