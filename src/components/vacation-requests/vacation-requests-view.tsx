@@ -9,7 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { Tables } from '@/types/supabase.types'
+import { VacationRequestWithProfiles } from '@/hooks/vacation-requests/use-vacation-requests-list'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Badge } from '@/components/ui/badge'
@@ -17,7 +17,7 @@ import { Badge } from '@/components/ui/badge'
 interface VacationRequestsViewProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  request?: Tables<{ schema: 'vacation' }, 'vacation_requests'>
+  request?: VacationRequestWithProfiles
 }
 
 export function VacationRequestsView({
@@ -72,6 +72,30 @@ export function VacationRequestsView({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-muted-foreground">
+                Empleado
+              </label>
+              <p className="text-sm font-medium">
+                {request.employee_profile
+                  ? `${request.employee_profile.first_name} ${request.employee_profile.last_name}`
+                  : 'Desconocido'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">
+                Email
+              </label>
+              <p
+                className="text-sm truncate"
+                title={request.employee_profile?.email || ''}
+              >
+                {request.employee_profile?.email || '-'}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">
                 Fecha Inicio
               </label>
               <p className="text-sm">
@@ -108,8 +132,10 @@ export function VacationRequestsView({
                   <label className="text-sm font-medium text-muted-foreground">
                     Resuelto por
                   </label>
-                  <p className="text-xs font-mono text-muted-foreground break-all">
-                    {request.decided_by || 'Sistema'}
+                  <p className="text-sm font-medium">
+                    {request.approver_profile
+                      ? `${request.approver_profile.first_name} ${request.approver_profile.last_name}`
+                      : 'Sistema'}
                   </p>
                 </div>
                 <div>

@@ -14,6 +14,7 @@ import {
 import { Tables } from '@/types/supabase.types'
 import { Edit, MoreHorizontal, Trash } from 'lucide-react'
 import { useState } from 'react'
+import CanAccess from '@/components/ui/can-access'
 
 type VacationPeriodsActionsProps = {
   vacationPeriod: Tables<{ schema: 'vacation' }, 'vacation_periods'>
@@ -42,14 +43,28 @@ export function VacationPeriodsActions({
             Copiar ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsDeleteOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+          <CanAccess
+            subdomain="vacation"
+            resource="vacation_periods"
+            action="update"
+            variant="hidden"
+          >
+            <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess
+            subdomain="vacation"
+            resource="vacation_periods"
+            action="delete"
+            variant="hidden"
+          >
+            <DropdownMenuItem onClick={() => setIsDeleteOpen(true)}>
+              <Trash className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

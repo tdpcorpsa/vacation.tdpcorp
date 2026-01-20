@@ -38,7 +38,7 @@ export function EmployeesCreate() {
       await createMutation.mutateAsync(values)
       setOpen(false)
       form.reset()
-    } catch (error) {
+    } catch (_) {
       // Error handled in hook
     }
   }

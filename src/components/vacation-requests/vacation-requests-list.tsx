@@ -2,7 +2,10 @@
 
 import { VacationRequestsActions } from './vacation-requests-actions'
 import { VacationRequestsView } from './vacation-requests-view'
-import { useVacationRequestsList } from '@/hooks/vacation-requests/use-vacation-requests-list'
+import {
+  useVacationRequestsList,
+  VacationRequestWithProfiles,
+} from '@/hooks/vacation-requests/use-vacation-requests-list'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -17,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Tables } from '@/types/supabase.types'
 import {
   ColumnDef,
   flexRender,
@@ -32,7 +34,7 @@ export function VacationRequestsList() {
   const [search, setSearch] = useState('')
   const [view, setView] = useState<'table' | 'list' | 'card'>('table')
   const [viewRequest, setViewRequest] = useState<
-    Tables<{ schema: 'vacation' }, 'vacation_requests'> | undefined
+    VacationRequestWithProfiles | undefined
   >(undefined)
   const [isViewOpen, setIsViewOpen] = useState(false)
 
@@ -41,9 +43,21 @@ export function VacationRequestsList() {
     search,
   })
 
-  const columns: ColumnDef<
-    Tables<{ schema: 'vacation' }, 'vacation_requests'>
-  >[] = [
+  const columns: ColumnDef<VacationRequestWithProfiles>[] = [
+    {
+      id: 'employee',
+      header: 'Empleado',
+      cell: ({ row }) => {
+        const profile = row.original.employee_profile
+        return profile ? (
+          <span>
+            {profile.first_name} {profile.last_name}
+          </span>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        )
+      },
+    },
     {
       accessorKey: 'start_date',
       header: 'Fecha Inicio',
@@ -80,8 +94,42 @@ export function VacationRequestsList() {
       ),
     },
     {
-      accessorKey: 'request_note',
-      header: 'Nota',
+      id: 'approver',
+      header: 'Aprobado Por',
+      cell: ({ row }) => {
+        const profile = row.original.approver_profile
+        return profile ? (
+          <div className="flex flex-col text-sm">
+            <span>
+              {profile.first_name} {profile.last_name}
+            </span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        )
+      },
+    },
+    {
+      accessorKey: 'decided_at',
+      header: 'Fecha Aprob.',
+      cell: ({ row }) =>
+        row.original.decided_at ? (
+          <span>{new Date(row.original.decided_at).toLocaleString()}</span>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        ),
+    },
+    {
+      accessorKey: 'response_note',
+      header: 'Nota Aprob.',
+      cell: ({ row }) => (
+        <span
+          className="truncate max-w-[150px] block"
+          title={row.original.response_note || ''}
+        >
+          {row.original.response_note || '-'}
+        </span>
+      ),
     },
     {
       id: 'actions',
@@ -202,14 +250,23 @@ export function VacationRequestsList() {
                     setIsViewOpen(true)
                   }}
                 >
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-1">
                     <span className="font-medium">
-                      Solicitud de {request.total_days} días
+                      {request.employee_profile
+                        ? `${request.employee_profile.first_name} ${request.employee_profile.last_name}`
+                        : 'Empleado desconocido'}{' '}
+                      - {request.total_days} días
                     </span>
                     <span className="text-sm text-muted-foreground">
                       {new Date(request.start_date).toLocaleDateString()} -{' '}
                       {new Date(request.end_date).toLocaleDateString()}
                     </span>
+                    {request.approver_profile && (
+                      <span className="text-xs text-muted-foreground">
+                        Aprobado por: {request.approver_profile.first_name}{' '}
+                        {request.approver_profile.last_name}
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-4">
                     <span
@@ -243,7 +300,9 @@ export function VacationRequestsList() {
                 <Card key={request.id}>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Solicitud
+                      {request.employee_profile
+                        ? `${request.employee_profile.first_name} ${request.employee_profile.last_name}`
+                        : 'Empleado'}
                     </CardTitle>
                     <VacationRequestsActions request={request} />
                   </CardHeader>
@@ -255,7 +314,7 @@ export function VacationRequestsList() {
                       {new Date(request.start_date).toLocaleDateString()} -{' '}
                       {new Date(request.end_date).toLocaleDateString()}
                     </p>
-                    <div className="mt-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       <span
                         className={`rounded-full px-2 py-1 text-xs font-semibold ${
                           request.status === 'APPROVED'
@@ -268,9 +327,15 @@ export function VacationRequestsList() {
                         {request.status}
                       </span>
                     </div>
-                    {request.request_note && (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {request.request_note}
+                    {request.approver_profile && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Aprobado por: {request.approver_profile.first_name}{' '}
+                        {request.approver_profile.last_name}
+                      </p>
+                    )}
+                    {request.response_note && (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Nota: {request.response_note}
                       </p>
                     )}
                   </CardContent>

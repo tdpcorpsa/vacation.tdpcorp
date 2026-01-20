@@ -1,6 +1,7 @@
 'use client'
 
 import { VacationPeriodsActions } from './vacation-periods-actions'
+import { EmployeesSelect } from '@/components/employees/employees-select'
 import { useVacationPeriodsList } from '@/hooks/vacation-periods/use-vacation-periods-list'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -24,16 +25,35 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { LayoutGrid, List, Table as TableIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import usePerms from '@/hooks/auth/use-perms'
+import { useProfileContext } from '@/providers/profile-provider'
 
 export function VacationPeriodsList() {
   const { page, pageSize } = usePagination()
   const [search, setSearch] = useState('')
   const [view, setView] = useState<'table' | 'list' | 'card'>('table')
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<
+    string | undefined
+  >()
+
+  const { canAccess } = usePerms()
+  const { profile } = useProfileContext()
+
+  const canReadAll = canAccess('vacation', 'vacation_periods', 'read')
+  const canReadId = canAccess('vacation', 'vacation_periods', 'readId')
+
+  useEffect(() => {
+    // Si solo tiene permiso readId y tenemos su perfil, preseleccionar su ID
+    if (!canReadAll && canReadId && profile?.id) {
+      setSelectedEmployeeId(profile.id)
+    }
+  }, [canReadAll, canReadId, profile?.id])
 
   const { data, isLoading } = useVacationPeriodsList({
     pagination: { page, pageSize },
     search,
+    employeeId: selectedEmployeeId,
   })
 
   const columns: ColumnDef<
@@ -84,12 +104,19 @@ export function VacationPeriodsList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <Input
-          placeholder="Buscar..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-sm"
-        />
+        <div className="flex items-center gap-4 flex-1">
+          <EmployeesSelect
+            value={selectedEmployeeId}
+            onValueChange={setSelectedEmployeeId}
+            disabled={!canReadAll && canReadId}
+          />
+          <Input
+            placeholder="Buscar periodo..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-sm"
+          />
+        </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center rounded-md border p-1">
             <Button
@@ -120,7 +147,11 @@ export function VacationPeriodsList() {
         </div>
       </div>
 
-      {isLoading ? (
+      {!selectedEmployeeId ? (
+        <div className="text-center py-8 text-muted-foreground border rounded-md bg-muted/10">
+          Seleccione un empleado para ver sus periodos vacacionales.
+        </div>
+      ) : isLoading ? (
         <div>Cargando...</div>
       ) : (
         <>
@@ -236,7 +267,9 @@ export function VacationPeriodsList() {
         </>
       )}
 
-      <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
+      {selectedEmployeeId && (
+        <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
+      )}
     </div>
   )
 }
