@@ -34,6 +34,8 @@ export default function useProfile() {
 
       if (error) throw error
 
+      console.log('useProfile data:', data)
+
       return data as UserView
     },
   })
