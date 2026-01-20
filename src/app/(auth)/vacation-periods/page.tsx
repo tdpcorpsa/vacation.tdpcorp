@@ -6,14 +6,18 @@ import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/ui/page-header'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
-import { ProtectPage } from '@/components/auth/protect-page'
 import CanAccess from '@/components/ui/can-access'
 
 export default function VacationPeriodsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false)
 
   return (
-    <ProtectPage subdomain="vacation" resource="vacation_periods" action="read">
+    <CanAccess
+      subdomain="vacation"
+      resource="vacation_periods"
+      action="read"
+      variant="page"
+    >
       <div className="flex flex-col gap-4">
         <PageHeader
           title="Periodos Vacacionales"
@@ -40,6 +44,6 @@ export default function VacationPeriodsPage() {
           />
         </div>
       </div>
-    </ProtectPage>
+    </CanAccess>
   )
 }
