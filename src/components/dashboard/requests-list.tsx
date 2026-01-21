@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { FileText, ExternalLink, ArrowUpDown, Eye } from 'lucide-react'
+import { FileText, ExternalLink, ArrowUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   PaginationGroup,
@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/pagination-group'
 import { VacationRequest } from '@/hooks/dashboard/use-dashboard-data'
 import { getStatusColor, getStatusLabel } from './utils'
+import { RequestActions } from './request-actions'
 
 interface RequestsListProps {
   requests: VacationRequest[]
@@ -106,13 +107,6 @@ export function RequestsList({
             Historial de solicitudes del periodo seleccionado.
           </CardDescription>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-muted-foreground hover:text-primary transition-transform duration-200 hover:translate-x-1"
-        >
-          Ver todo <ExternalLink className="ml-2 h-3 w-3" />
-        </Button>
       </CardHeader>
       <CardContent className="flex-1 overflow-x-auto">
         <Table>
@@ -190,23 +184,7 @@ export function RequestsList({
                     {new Date(request.updated_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onViewRequest(request.id)}
-                        title="Ver detalle"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        title="Ir a solicitud"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <RequestActions onView={() => onViewRequest(request.id)} />
                   </TableCell>
                 </TableRow>
               ))
