@@ -291,7 +291,7 @@ export type Database = {
           created_at: string
           hire_date: string | null
           id: string
-          labor_regime_id: string
+          labor_regime_id: string | null
           manager_id: string | null
           updated_at: string
         }
@@ -299,7 +299,7 @@ export type Database = {
           created_at?: string
           hire_date?: string | null
           id: string
-          labor_regime_id: string
+          labor_regime_id?: string | null
           manager_id?: string | null
           updated_at?: string
         }
@@ -307,7 +307,7 @@ export type Database = {
           created_at?: string
           hire_date?: string | null
           id?: string
-          labor_regime_id?: string
+          labor_regime_id?: string | null
           manager_id?: string | null
           updated_at?: string
         }
@@ -334,6 +334,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          days: number
           policies: Json | null
           updated_at: string
         }
@@ -342,6 +343,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          days: number
           policies?: Json | null
           updated_at?: string
         }
@@ -350,6 +352,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          days?: number
           policies?: Json | null
           updated_at?: string
         }

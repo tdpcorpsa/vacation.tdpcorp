@@ -1,49 +1,41 @@
 'use client'
 
-import { LayoutGrid, List, Table as TableIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { LayoutGrid, List, Table } from 'lucide-react'
+import { parseAsString, useQueryState } from 'nuqs'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
-export type ViewType = 'table' | 'list' | 'card'
+export type ViewType = 'table' | 'list' | 'grid'
 
-interface SelectViewProps {
-  view: ViewType
-  onViewChange: (view: ViewType) => void
-  className?: string
+export function useView(defaultView: ViewType = 'table') {
+  return useQueryState(
+    'view',
+    parseAsString.withDefault(defaultView).withOptions({
+      shallow: true,
+      history: 'replace',
+    })
+  )
 }
 
-export function SelectView({ view, onViewChange, className }: SelectViewProps) {
+export function SelectView() {
+  const [view, setView] = useView()
+
   return (
-    <div
-      className={cn('flex items-center gap-1 rounded-md border p-1', className)}
+    <ToggleGroup
+      type="single"
+      value={view}
+      onValueChange={(value) => {
+        if (value) setView(value as ViewType)
+      }}
     >
-      <Button
-        variant={view === 'table' ? 'secondary' : 'ghost'}
-        size="icon"
-        className="h-7 w-7"
-        onClick={() => onViewChange('table')}
-        title="Tabla"
-      >
-        <TableIcon className="h-4 w-4" />
-      </Button>
-      <Button
-        variant={view === 'list' ? 'secondary' : 'ghost'}
-        size="icon"
-        className="h-7 w-7"
-        onClick={() => onViewChange('list')}
-        title="Lista"
-      >
+      <ToggleGroupItem value="table" aria-label="Vista de tabla">
+        <Table className="h-4 w-4" />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="list" aria-label="Vista de lista">
         <List className="h-4 w-4" />
-      </Button>
-      <Button
-        variant={view === 'card' ? 'secondary' : 'ghost'}
-        size="icon"
-        className="h-7 w-7"
-        onClick={() => onViewChange('card')}
-        title="Tarjetas"
-      >
+      </ToggleGroupItem>
+      <ToggleGroupItem value="grid" aria-label="Vista de tarjetas">
         <LayoutGrid className="h-4 w-4" />
-      </Button>
-    </div>
+      </ToggleGroupItem>
+    </ToggleGroup>
   )
 }
