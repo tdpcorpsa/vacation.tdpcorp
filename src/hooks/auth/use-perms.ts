@@ -13,10 +13,24 @@ export default function usePerms() {
   const canAccess = (subdomain: string, resource: string, action: string) => {
     if (profile?.is_superuser) return true
 
-    const appPerm = profile?.roles
-      ?.flatMap((role) => role?.app_perms || [])
-      ?.find((item) => item?.subdomain === subdomain)
-    return (appPerm as any)?.[resource]?.[action] === true
+    // Buscar el permiso de aplicación correspondiente al subdominio
+      const appPerm = profile?.roles
+        ?.flatMap((role) => role?.app_perms || [])
+        ?.find((item) => item?.subdomain === subdomain)
+
+      // Buscar el recurso dentro de los permisos (ahora sabemos que perms es un array)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const resourcePerm = (appPerm?.perms as any[])?.find(
+        (p) => p.value === resource
+      )
+
+      // Buscar la acción dentro de las acciones del recurso
+      const hasAction = resourcePerm?.actions?.some(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (a: any) => a.value === action
+      )
+
+      return hasAction || false
   }
 
   /**

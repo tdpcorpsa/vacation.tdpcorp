@@ -51,6 +51,7 @@ export default function AppListMenu() {
         <div className="px-4 py-3 border-b border-border bg-muted/30">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logos/ISOTIPO.svg" alt="TDP Corp" className="size-8" />
             </div>
             <div>
