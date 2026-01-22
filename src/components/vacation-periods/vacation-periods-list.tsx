@@ -56,9 +56,22 @@ export function VacationPeriodsList() {
     employeeId: selectedEmployeeId,
   })
 
-  const columns: ColumnDef<
-    Tables<{ schema: 'vacation' }, 'vacation_periods'>
-  >[] = [
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const columns: ColumnDef<any>[] = [
+    {
+      id: 'employee',
+      header: 'Empleado',
+      cell: ({ row }) => {
+        const profile = row.original.employee_profile
+        return profile ? (
+          <span>
+            {profile.first_name} {profile.last_name}
+          </span>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        )
+      },
+    },
     {
       accessorKey: 'period_label',
       header: 'Periodo',
@@ -147,11 +160,7 @@ export function VacationPeriodsList() {
         </div>
       </div>
 
-      {!selectedEmployeeId ? (
-        <div className="text-center py-8 text-muted-foreground border rounded-md bg-muted/10">
-          Seleccione un empleado para ver sus periodos vacacionales.
-        </div>
-      ) : isLoading ? (
+      {isLoading ? (
         <div>Cargando...</div>
       ) : (
         <>
