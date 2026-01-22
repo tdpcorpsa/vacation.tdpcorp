@@ -29,6 +29,13 @@ export default function CanAccess({
       </div>
     )
 
+  // Si la variante es 'page' y la acción es 'read', verificamos también 'readId'
+  if (variant === 'page' && action === 'read' && !hasAccess) {
+    // Verificar si tiene permiso readId
+    const hasReadId = canAccess(subdomain, resource, 'readId')
+    if (hasReadId) return children
+  }
+
   if (hasAccess) return children
   return <Forbidden variant={variant}>{children}</Forbidden>
 }

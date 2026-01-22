@@ -24,34 +24,34 @@ export const useVacationPeriodsList = ({
   const { canAccess } = usePerms()
   const { profile } = useProfileContext()
 
-  return useQuery({
-    queryKey: ['vacation-periods', pagination, search, employeeId, profile?.id],
-    queryFn: async () => {
-      const canReadAll = canAccess('vacation', 'vacation_periods', 'read')
-      const canReadId = canAccess('vacation', 'vacation_periods', 'readId')
+  // Si no tiene permiso de leer todo ('read'), pero sí tiene 'readId', forzamos el filtro por su propio ID
+  const canReadAll = canAccess('vacation', 'vacation_periods', 'read')
+  const canReadOwn = canAccess('vacation', 'vacation_periods', 'readId')
 
-      // Si no tiene ningún permiso de lectura, retornar vacío
-      if (!canReadAll && !canReadId) {
+  // Si no puede leer todo, pero puede leer lo suyo, usamos su ID.
+  // Si puede leer todo, usamos el employeeId seleccionado (o undefined si no seleccionó nada).
+  const effectiveEmployeeId =
+    !canReadAll && canReadOwn ? profile?.id || undefined : employeeId
+
+  return useQuery({
+    queryKey: [
+      'vacation-periods',
+      pagination.page,
+      pagination.pageSize,
+      search,
+      effectiveEmployeeId, // Usamos el ID efectivo
+    ],
+    queryFn: async () => {
+      // Si no tiene permisos, retornar vacío
+      if (!canReadAll && !canReadOwn) {
         return {
           data: [],
           total: 0,
         }
       }
 
-      // Determinar el employeeId efectivo
-      // Si solo tiene permiso readId, forzamos a ver sus propios datos
-      let effectiveEmployeeId = employeeId
-      if (!canReadAll && canReadId) {
-        if (profile?.id) {
-          effectiveEmployeeId = profile.id
-        } else {
-          // Si no hay profile.id (algo raro), retornar vacío por seguridad
-          return { data: [], total: 0 }
-        }
-      }
-
-      // Si se requiere que esté ligado a un empleado, y no hay employeeId efectivo, no devolver nada
-      if (!effectiveEmployeeId) {
+      // Si solo tiene permiso de leer lo suyo, pero no tenemos el ID del perfil, retornar vacío por seguridad
+      if (!canReadAll && canReadOwn && !profile?.id) {
         return {
           data: [],
           total: 0,
@@ -61,7 +61,7 @@ export const useVacationPeriodsList = ({
       let query = supabase
         .schema('vacation')
         .from('vacation_periods')
-        .select('*', { count: 'exact' })
+        .select('*, employee:employees(*)', { count: 'exact' })
 
       if (effectiveEmployeeId) {
         query = query.eq('employee_id', effectiveEmployeeId)
@@ -79,8 +79,30 @@ export const useVacationPeriodsList = ({
 
       if (error) throw error
 
+      // Obtener perfiles para mostrar nombres
+      const employeeIds = Array.from(
+        new Set(data?.map((p) => p.employee_id) || [])
+      )
+
+      const profilesMap = new Map()
+      if (employeeIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name')
+          .in('id', employeeIds)
+
+        if (profiles) {
+          profiles.forEach((p) => profilesMap.set(p.id, p))
+        }
+      }
+
+      const enrichedData = data?.map((period) => ({
+        ...period,
+        employee_profile: profilesMap.get(period.employee_id),
+      }))
+
       return {
-        data: data || [],
+        data: enrichedData || [],
         total: count || 0,
       }
     },

@@ -37,9 +37,19 @@ export const useVacationRequestsList = ({
     queryKey: ['vacation-requests', pagination, search, profile?.id],
     queryFn: async () => {
       const canReadAll = canAccess('vacation', 'vacation_requests', 'read')
-      const canReadId = canAccess('vacation', 'vacation_requests', 'readId')
+      const canReadOwn = canAccess('vacation', 'vacation_requests', 'readId')
 
-      if (!canReadAll && !canReadId) {
+      // Si no tiene permiso de leer todo ni leer lo suyo, retornar vacío
+      if (!canReadAll && !canReadOwn) {
+        return {
+          data: [] as VacationRequestWithProfiles[],
+          total: 0,
+          pagination,
+        }
+      }
+
+      // Si solo tiene permiso de leer lo suyo, pero no tenemos el ID del perfil, retornar vacío por seguridad
+      if (!canReadAll && canReadOwn && !profile?.id) {
         return {
           data: [] as VacationRequestWithProfiles[],
           total: 0,
@@ -57,8 +67,9 @@ export const useVacationRequestsList = ({
           }
         )
 
-      if (!canReadAll && canReadId && profile?.id) {
-        query = query.eq('employee_id', profile.id)
+      // Si NO tiene permiso de leer todo, pero SÍ tiene permiso de leer lo suyo, filtrar por su ID
+      if (!canReadAll && canReadOwn) {
+        query = query.eq('employee_id', profile!.id as string)
       }
 
       // Aplicar búsqueda

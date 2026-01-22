@@ -21,13 +21,13 @@ export default function usePerms() {
       // Buscar el recurso dentro de los permisos (ahora sabemos que perms es un array)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const resourcePerm = (appPerm?.perms as any[])?.find(
-        (p) => p.value === resource
+        (p) => p.value?.trim() === resource?.trim()
       )
 
       // Buscar la acción dentro de las acciones del recurso
       const hasAction = resourcePerm?.actions?.some(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (a: any) => a.value === action
+        (a: any) => a.value?.trim() === action?.trim()
       )
 
       return hasAction || false

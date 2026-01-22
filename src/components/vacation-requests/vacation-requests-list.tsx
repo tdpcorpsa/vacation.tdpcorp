@@ -9,6 +9,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Item } from '@/components/ui/item'
 import { PaginationGroup } from '@/components/ui/pagination-group/pagination-group'
 import { usePagination } from '@/components/ui/pagination-group/use-pagination'
@@ -123,12 +128,23 @@ export function VacationRequestsList() {
       accessorKey: 'response_note',
       header: 'Nota Aprob.',
       cell: ({ row }) => (
-        <span
-          className="truncate max-w-[150px] block"
-          title={row.original.response_note || ''}
-        >
-          {row.original.response_note || '-'}
-        </span>
+        <Popover>
+          <PopoverTrigger asChild>
+            <span
+              className="truncate max-w-[150px] block cursor-pointer hover:underline"
+            >
+              {row.original.response_note || '-'}
+            </span>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-4">
+            <div className="space-y-2">
+              <h4 className="font-medium leading-none">Nota de Aprobación</h4>
+              <p className="text-sm text-muted-foreground">
+                {row.original.response_note || 'Sin nota'}
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
       ),
     },
     {
