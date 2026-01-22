@@ -138,7 +138,9 @@ export function useHrDashboardData() {
           managerProfile: employee.manager_id
             ? (profilesById[employee.manager_id] ?? null)
             : null,
-          laborRegime: laborRegimesById[employee.labor_regime_id] ?? null,
+          laborRegime: employee.labor_regime_id
+            ? (laborRegimesById[employee.labor_regime_id] ?? null)
+            : null,
         })
       )
 

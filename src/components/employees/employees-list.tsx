@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useQueryState, parseAsString } from 'nuqs'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -8,7 +7,7 @@ import { es } from 'date-fns/locale'
 import { useEmployeesList } from '@/hooks/employees/use-employees-list'
 import { EmployeesActions } from './employees-actions'
 import { PageHeader } from '@/components/ui/page-header'
-import { SelectView, ViewType } from '@/components/ui/select-view'
+import { SelectView, useView } from '@/components/ui/select-view'
 import { SearchInput } from '@/components/ui/search-input'
 import { PaginationGroup } from '@/components/ui/pagination-group'
 import { usePagination } from '@/components/ui/pagination-group/use-pagination'
@@ -28,7 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 export function EmployeesList() {
   const { page, pageSize } = usePagination()
   const pagination = { page, pageSize }
-  const [view, setView] = useState<ViewType>('table')
+  const [view] = useView()
   const [search] = useQueryState('q', parseAsString.withDefault(''))
 
   const { data, isLoading } = useEmployeesList({
@@ -48,7 +47,7 @@ export function EmployeesList() {
           <div className="w-full sm:w-72">
             <SearchInput placeholder="Buscar por nombre o email..." />
           </div>
-          <SelectView view={view} onViewChange={setView} />
+          <SelectView />
         </div>
 
         {isLoading ? (
@@ -173,7 +172,7 @@ export function EmployeesList() {
               </div>
             )}
 
-            {view === 'card' && (
+            {view === 'grid' && (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {data.data.map((employee) => (
                   <Card key={employee.id}>

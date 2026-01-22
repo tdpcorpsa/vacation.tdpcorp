@@ -35,7 +35,7 @@ export function EmployeesEdit({
     resolver: zodResolver(EmployeeSchema),
     defaultValues: {
       id: employee.id,
-      labor_regime_id: employee.labor_regime_id,
+      labor_regime_id: employee.labor_regime_id || '',
       hire_date: employee.hire_date || '',
       manager_id: employee.manager_id || null,
     },

@@ -104,15 +104,20 @@ export function useDashboardData() {
         managerProfile = manager
       }
 
-      const { data: laborRegime, error: laborRegimeError } = await supabase
-        .schema('vacation')
-        .from('labor_regime')
-        .select('*')
-        .eq('id', employee.labor_regime_id)
-        .maybeSingle()
+      let laborRegime: LaborRegimeRow | null = null
 
-      if (laborRegimeError) {
-        throw new Error(laborRegimeError.message)
+      if (employee.labor_regime_id) {
+        const { data, error: laborRegimeError } = await supabase
+          .schema('vacation')
+          .from('labor_regime')
+          .select('*')
+          .eq('id', employee.labor_regime_id)
+          .maybeSingle()
+
+        if (laborRegimeError) {
+          throw new Error(laborRegimeError.message)
+        }
+        laborRegime = data
       }
 
       const employeeSummary: EmployeeSummary = {
