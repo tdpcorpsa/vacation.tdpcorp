@@ -8,17 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { PageHeader } from '@/components/ui/page-header'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { cn } from '@/lib/utils'
 import { useDashboardData } from '@/hooks/dashboard/use-dashboard-data'
 import { useHrDashboardData } from '@/hooks/dashboard/use-hr-dashboard-data'
 import { useHrSelectors } from '@/hooks/dashboard/use-hr-selectors'
