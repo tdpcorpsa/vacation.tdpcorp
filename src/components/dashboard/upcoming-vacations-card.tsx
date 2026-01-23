@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Plane, Eye } from 'lucide-react'
 import { VacationRequest } from '@/hooks/dashboard/use-dashboard-data'
+import { useRouter } from 'next/navigation'
 
 interface UpcomingVacationsCardProps {
   upcomingVacations: VacationRequest[]
@@ -11,6 +12,8 @@ interface UpcomingVacationsCardProps {
 export function UpcomingVacationsCard({
   upcomingVacations,
 }: UpcomingVacationsCardProps) {
+  const router = useRouter()
+
   const getDaysUntil = (date: string) => {
     const today = new Date()
     const start = new Date(date)
@@ -76,6 +79,7 @@ export function UpcomingVacationsCard({
           <Button
             className="w-full bg-black text-white hover:bg-black/90 dark:bg:white dark:text-black dark:hover:bg-white/90 transition-all hover:scale-[1.02] shadow-sm"
             size="sm"
+            onClick={() => router.push('/vacation-requests?action=create')}
           >
             Solicita tus próximas vacaciones
           </Button>

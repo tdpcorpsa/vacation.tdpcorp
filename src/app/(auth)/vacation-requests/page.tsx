@@ -5,11 +5,19 @@ import { VacationRequestsList } from '@/components/vacation-requests/vacation-re
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/ui/page-header'
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CanAccess from '@/components/ui/can-access'
+import { useSearchParams } from 'next/navigation'
 
 export default function VacationRequestsPage() {
+  const searchParams = useSearchParams()
   const [isCreateOpen, setIsCreateOpen] = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'create') {
+      setIsCreateOpen(true)
+    }
+  }, [searchParams])
 
   return (
     <CanAccess
