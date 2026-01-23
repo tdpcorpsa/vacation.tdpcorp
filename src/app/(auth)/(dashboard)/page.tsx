@@ -65,15 +65,6 @@ export default function DashboardPage() {
         <PageHeader
           title="Dashboard"
           description="Gestión integral de vacaciones y métricas."
-          actions={
-            <Button
-              onClick={() => router.push('/vacation-requests?action=create')}
-              className="gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Solicita tus próximas vacaciones
-            </Button>
-          }
         />
 
         {isLoadingGlobal && <HrLoading />}
