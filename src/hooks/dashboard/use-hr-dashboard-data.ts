@@ -23,11 +23,12 @@ export type HRDashboardData = {
   laborRegimesById: Record<string, LaborRegimeRow>
 }
 
-export function useHrDashboardData() {
+export function useHrDashboardData(enabled: boolean = true) {
   const supabase = createClient()
 
   return useQuery({
     queryKey: ['hr-dashboard'],
+    enabled,
     queryFn: async (): Promise<HRDashboardData> => {
       const { data: employees, error: employeesError } = await supabase
         .schema('vacation')
