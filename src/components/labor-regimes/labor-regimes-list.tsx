@@ -57,7 +57,12 @@ const columns: ColumnDef<LaborRegime>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <LaborRegimeActions item={row.original} />,
+    header: () => <div className="text-right">Acciones</div>,
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <LaborRegimeActions item={row.original} />
+      </div>
+    ),
   },
 ]
 

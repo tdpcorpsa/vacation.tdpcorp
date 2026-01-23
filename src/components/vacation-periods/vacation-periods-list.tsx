@@ -100,8 +100,11 @@ export function VacationPeriodsList() {
     },
     {
       id: 'actions',
+      header: () => <div className="text-right">Acciones</div>,
       cell: ({ row }) => (
-        <VacationPeriodsActions vacationPeriod={row.original} />
+        <div className="flex justify-end">
+          <VacationPeriodsActions vacationPeriod={row.original} />
+        </div>
       ),
     },
   ]

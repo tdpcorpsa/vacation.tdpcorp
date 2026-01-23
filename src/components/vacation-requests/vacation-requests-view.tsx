@@ -13,6 +13,8 @@ import { VacationRequestWithProfiles } from '@/hooks/vacation-requests/use-vacat
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { getStatusColor, getStatusLabel } from './utils'
 
 interface VacationRequestsViewProps {
   open: boolean

@@ -55,7 +55,7 @@ export function EmployeesForm({ mode, currentEmployeeId }: EmployeesFormProps) {
                   onValueChange={field.onChange}
                   value={field.value || ''}
                 >
-                  <SelectTrigger id="id">
+                  <SelectTrigger id="id" className="w-full">
                     <SelectValue placeholder="Seleccione un usuario" />
                   </SelectTrigger>
                   <SelectContent>
@@ -91,7 +91,7 @@ export function EmployeesForm({ mode, currentEmployeeId }: EmployeesFormProps) {
             name="labor_regime_id"
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value || ''}>
-                <SelectTrigger id="labor_regime_id">
+                <SelectTrigger id="labor_regime_id" className="w-full">
                   <SelectValue placeholder="Seleccione un régimen" />
                 </SelectTrigger>
                 <SelectContent>
@@ -122,7 +122,7 @@ export function EmployeesForm({ mode, currentEmployeeId }: EmployeesFormProps) {
                 }
                 value={field.value || 'none'}
               >
-                <SelectTrigger id="manager_id">
+                <SelectTrigger id="manager_id" className="w-full">
                   <SelectValue placeholder="Seleccione un jefe (opcional)" />
                 </SelectTrigger>
                 <SelectContent>

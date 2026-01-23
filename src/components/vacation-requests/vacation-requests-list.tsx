@@ -7,6 +7,9 @@ import {
   VacationRequestWithProfiles,
 } from '@/hooks/vacation-requests/use-vacation-requests-list'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { getStatusColor, getStatusLabel } from './utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
@@ -82,20 +85,36 @@ export function VacationRequestsList() {
       header: 'Días',
     },
     {
+      accessorKey: 'request_note',
+      header: 'Nota Solicitud',
+      cell: ({ row }) => (
+        <Popover>
+          <PopoverTrigger asChild>
+            <span className="truncate max-w-[150px] block cursor-pointer hover:underline">
+              {row.original.request_note || '-'}
+            </span>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-4">
+            <div className="space-y-2">
+              <h4 className="font-medium leading-none">Nota de Solicitud</h4>
+              <p className="text-sm text-muted-foreground">
+                {row.original.request_note || 'Sin nota'}
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
+      ),
+    },
+    {
       accessorKey: 'status',
       header: 'Estado',
       cell: ({ row }) => (
-        <span
-          className={`rounded-full px-2 py-1 text-xs font-semibold ${
-            row.original.status === 'APPROVED'
-              ? 'bg-green-100 text-green-800'
-              : row.original.status === 'REJECTED'
-                ? 'bg-red-100 text-red-800'
-                : 'bg-yellow-100 text-yellow-800'
-          }`}
+        <Badge
+          variant="secondary"
+          className={cn('font-normal', getStatusColor(row.original.status))}
         >
-          {row.original.status}
-        </span>
+          {getStatusLabel(row.original.status)}
+        </Badge>
       ),
     },
     {
@@ -149,7 +168,12 @@ export function VacationRequestsList() {
     },
     {
       id: 'actions',
-      cell: ({ row }) => <VacationRequestsActions request={row.original} />,
+      header: () => <div className="text-right">Acciones</div>,
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <VacationRequestsActions request={row.original} />
+        </div>
+      ),
     },
   ]
 
@@ -331,17 +355,15 @@ export function VacationRequestsList() {
                       {new Date(request.end_date).toLocaleDateString()}
                     </p>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      <span
-                        className={`rounded-full px-2 py-1 text-xs font-semibold ${
-                          request.status === 'APPROVED'
-                            ? 'bg-green-100 text-green-800'
-                            : request.status === 'REJECTED'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                        }`}
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          'font-normal',
+                          getStatusColor(request.status)
+                        )}
                       >
-                        {request.status}
-                      </span>
+                        {getStatusLabel(request.status)}
+                      </Badge>
                     </div>
                     {request.approver_profile && (
                       <p className="mt-2 text-xs text-muted-foreground">

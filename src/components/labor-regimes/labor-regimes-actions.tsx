@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LaborRegimeEdit } from './labor-regimes-edit'
@@ -35,7 +34,6 @@ export function LaborRegimeActions({ item }: LaborRegimeActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
           <CanAccess
             subdomain="vacation"
             resource="labor_regime"

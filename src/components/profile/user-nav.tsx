@@ -23,7 +23,7 @@ import useLogout from '@/hooks/auth/use-logout'
 import Link from 'next/link'
 import useProfile from '@/hooks/auth/use-profile'
 
-const URL = process.env.NEXT_PUBLIC_AUTH_URL || ''
+const URL = 'https://auth.tdpcorp.com.pe'
 
 export function NavUser() {
   const { isMobile } = useSidebar()
