@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -36,13 +35,6 @@ export function VacationPeriodsActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(vacationPeriod.id)}
-          >
-            Copiar ID
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <CanAccess
             subdomain="vacation"
             resource="vacation_periods"

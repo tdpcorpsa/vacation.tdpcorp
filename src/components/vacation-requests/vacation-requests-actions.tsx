@@ -7,8 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useVacationRequestsSendEmail } from '@/hooks/vacation-requests/use-vacation-requests-send-email'
@@ -39,14 +37,13 @@ export function VacationRequestsActions({
             variant="ghost"
             className="h-8 w-8 p-0"
             onClick={(e) => e.stopPropagation()}
+            disabled={!isPending}
           >
             <span className="sr-only">Abrir menú</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-          <DropdownMenuSeparator />
           {isPending && (
             <>
               <CanAccess
@@ -70,24 +67,24 @@ export function VacationRequestsActions({
                 <Mail className="mr-2 h-4 w-4" />
                 {isSendingEmail ? 'Enviando...' : 'Enviar al Jefe'}
               </DropdownMenuItem>
+              <CanAccess
+                subdomain="vacation"
+                resource="vacation_requests"
+                action="delete"
+                variant="hidden"
+              >
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowDelete(true)
+                  }}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Eliminar
+                </DropdownMenuItem>
+              </CanAccess>
             </>
           )}
-          <CanAccess
-            subdomain="vacation"
-            resource="vacation_requests"
-            action="delete"
-            variant="hidden"
-          >
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation()
-                setShowDelete(true)
-              }}
-            >
-              <Trash className="mr-2 h-4 w-4" />
-              Eliminar
-            </DropdownMenuItem>
-          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 
