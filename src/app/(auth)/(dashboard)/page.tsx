@@ -157,7 +157,7 @@ export default function DashboardPage() {
             {activeTab === 'planning' && canSeeTabs && (
               <HrPlanningTab requests={displayRequests} />
             )}
-
+//
             {activeTab === 'my-data' && (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
                 <EmployeeInfoCard
