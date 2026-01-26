@@ -57,6 +57,9 @@ export default function DashboardPage() {
     handleViewRequest,
     selectedRequest,
     hrData,
+    dateRangeFilter,
+    setDateRangeFilter,
+    requestsPage,
   } = useDashboardController()
 
   const employeeForEdit: EmployeeWithUser | undefined = employeeSummary
@@ -71,7 +74,8 @@ export default function DashboardPage() {
         },
         labor_regime: employeeSummary.laborRegime,
         manager: employeeSummary.managerProfile,
-        is_on_vacation: false,
+        is_on_vacation: employeeSummary.isOnVacation,
+        currentVacation: employeeSummary.currentVacation,
       }
     : undefined
 
@@ -140,10 +144,13 @@ export default function DashboardPage() {
                 setRequestSearch={setRequestSearch}
                 hrStatusFilter={hrStatusFilter}
                 setHrStatusFilter={setHrStatusFilter}
+                dateRangeFilter={dateRangeFilter}
+                setDateRangeFilter={setDateRangeFilter}
                 paginatedRequests={paginatedDisplayRequests}
                 totalFilteredRequests={filteredDisplayRequests.length}
                 requestsPerPage={REQUESTS_PER_PAGE}
                 onViewRequest={handleViewRequest}
+                currentPage={requestsPage}
               />
             )}
 
@@ -166,6 +173,8 @@ export default function DashboardPage() {
                 <UpcomingVacationsCard
                   upcomingVacations={upcomingVacations}
                   onCreateRequest={() => setIsCreateRequestOpen(true)}
+                  isOnVacation={employeeSummary?.isOnVacation || false}
+                  currentVacation={employeeSummary?.currentVacation}
                 />
               </div>
             )}

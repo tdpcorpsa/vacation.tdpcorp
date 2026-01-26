@@ -23,6 +23,7 @@ export type EmployeeWithUser = Employee & {
   labor_regime?: LaborRegime | null
   manager?: ProfilePartial | null
   is_on_vacation?: boolean
+  currentVacation?: any
 }
 
 export const useEmployeesList = (params?: {

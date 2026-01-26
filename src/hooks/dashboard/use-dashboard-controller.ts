@@ -10,6 +10,7 @@ import {
   calculatePeriodTotals,
   filterRequests,
 } from '@/components/dashboard/utils'
+import { DateRange } from 'react-day-picker'
 
 export const useDashboardController = () => {
   const { canAccess } = usePerms()
@@ -27,6 +28,7 @@ export const useDashboardController = () => {
 
   const [requestSearch, setRequestSearch] = React.useState('')
   const [hrStatusFilter, setHrStatusFilter] = React.useState<string>('ALL')
+  const [dateRangeFilter, setDateRangeFilter] = React.useState<DateRange | undefined>(undefined)
 
   const { page: requestPage } = usePagination({ queryKey: 'requestsPage' })
 
@@ -73,6 +75,7 @@ export const useDashboardController = () => {
   } = useHrSelectors(hrData, {
     requestSearch,
     hrStatusFilter,
+    dateRangeFilter,
     page: requestPage,
     pageSize: REQUESTS_PER_PAGE,
   })
@@ -237,6 +240,8 @@ export const useDashboardController = () => {
     setRequestSearch,
     hrStatusFilter,
     setHrStatusFilter,
+    dateRangeFilter,
+    setDateRangeFilter,
     REQUESTS_PER_PAGE,
     canSeeTabs,
     periods,
@@ -253,5 +258,6 @@ export const useDashboardController = () => {
     handleViewRequest,
     selectedRequest,
     hrData, // Needed for RequestDetailDialog periods prop
+    requestsPage: requestPage,
   }
 }

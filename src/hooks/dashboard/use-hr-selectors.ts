@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { HRDashboardData, HRDashboardEmployee } from './use-hr-dashboard-data'
 import { VacationRequest, VacationPeriod } from './use-dashboard-data'
+import { DateRange } from 'react-day-picker'
+import { isWithinInterval, startOfDay, endOfDay } from 'date-fns'
 
 export type EnrichedVacationRequest = VacationRequest & {
   employeeProfile: HRDashboardEmployee['profile']
@@ -19,6 +21,7 @@ export function useHrSelectors(
   filters: {
     requestSearch: string
     hrStatusFilter: string
+    dateRangeFilter?: DateRange
     page: number
     pageSize: number
   }
@@ -87,11 +90,35 @@ export function useHrSelectors(
         profile?.email?.toLowerCase().includes(search)
 
       const matchesStatus =
-        filters.hrStatusFilter === 'ALL' || req.status === filters.hrStatusFilter
+        filters.hrStatusFilter === 'ALL' || req.status.toLowerCase() === filters.hrStatusFilter.toLowerCase()
 
-      return matchesSearch && matchesStatus
+      let matchesDate = true
+      if (filters.dateRangeFilter?.from) {
+        const filterFrom = startOfDay(filters.dateRangeFilter.from)
+        const filterTo = endOfDay(
+          filters.dateRangeFilter.to || filters.dateRangeFilter.from
+        )
+        // Parsear fechas de solicitud (asumiendo string YYYY-MM-DD)
+        // Usamos new Date(str + 'T00:00:00') para evitar problemas de zona horaria local
+        // O mejor, usamos las mismas utilidades de fecha consistentes
+        const parse = (s: string) => {
+           const [y, m, d] = s.split('-').map(Number)
+           return new Date(y, m - 1, d)
+        }
+        const reqStart = startOfDay(parse(req.start_date))
+        const reqEnd = endOfDay(parse(req.end_date))
+
+        matchesDate = reqStart <= filterTo && reqEnd >= filterFrom
+      }
+
+      return matchesSearch && matchesStatus && matchesDate
     })
-  }, [hrEnrichedRequests, filters.requestSearch, filters.hrStatusFilter])
+  }, [
+    hrEnrichedRequests,
+    filters.requestSearch,
+    filters.hrStatusFilter,
+    filters.dateRangeFilter,
+  ])
 
   const paginatedHrRequests = filteredHrRequests.slice(
     (filters.page - 1) * filters.pageSize,

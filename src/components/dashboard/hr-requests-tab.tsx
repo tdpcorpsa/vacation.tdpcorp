@@ -24,21 +24,33 @@ import {
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { PaginationGroup } from '@/components/ui/pagination-group'
-import { Search, Filter, Download } from 'lucide-react'
+import { Search, Filter, Download, CalendarIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getStatusColor, getStatusLabel } from './utils'
 import { EnrichedVacationRequest } from '@/hooks/dashboard/use-hr-selectors'
 import { RequestActions } from './request-actions'
+import { DateRange } from 'react-day-picker'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 
 interface HrRequestsTabProps {
   requestSearch: string
   setRequestSearch: (value: string) => void
   hrStatusFilter: string
   setHrStatusFilter: (value: string) => void
+  dateRangeFilter: DateRange | undefined
+  setDateRangeFilter: (range: DateRange | undefined) => void
   paginatedRequests: EnrichedVacationRequest[]
   totalFilteredRequests: number
   requestsPerPage: number
   onViewRequest: (id: string) => void
+  currentPage?: number
 }
 
 export function HrRequestsTab({
@@ -46,18 +58,34 @@ export function HrRequestsTab({
   setRequestSearch,
   hrStatusFilter,
   setHrStatusFilter,
+  dateRangeFilter,
+  setDateRangeFilter,
   paginatedRequests,
   totalFilteredRequests,
   requestsPerPage,
   onViewRequest,
+  currentPage = 1,
 }: HrRequestsTabProps) {
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '-'
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '-'
+    // Ajustar zona horaria local
+    const parts = dateStr.split('-')
+    if (parts.length !== 3) return dateStr // Retornar valor original si no cumple formato
+
+    const [y, m, d] = parts.map(Number)
+    if (isNaN(y) || isNaN(m) || isNaN(d)) return dateStr
+
+    try {
+      return format(new Date(y, m - 1, d), 'dd MMM yyyy', { locale: es })
+    } catch (e) {
+      return dateStr
+    }
+  }
+
+  const handleClearFilters = () => {
+    setRequestSearch('')
+    setHrStatusFilter('ALL')
+    setDateRangeFilter(undefined)
   }
 
   return (
@@ -70,7 +98,7 @@ export function HrRequestsTab({
               Gestión operativa de todas las solicitudes registradas.
             </CardDescription>
           </div>
-          <div className="flex flex-wrap gap-2 w-full lg:w-auto">
+          <div className="flex flex-wrap gap-2 w-full lg:w-auto items-center">
             <div className="relative flex-1 lg:w-64">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -80,20 +108,78 @@ export function HrRequestsTab({
                 onChange={(e) => setRequestSearch(e.target.value)}
               />
             </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={'outline'}
+                  className={cn(
+                    'w-[240px] justify-start text-left font-normal',
+                    !dateRangeFilter && 'text-muted-foreground'
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dateRangeFilter?.from ? (
+                    dateRangeFilter.to ? (
+                      <>
+                        {format(dateRangeFilter.from, 'dd/MM/yy', {
+                          locale: es,
+                        })}{' '}
+                        -{' '}
+                        {format(dateRangeFilter.to, 'dd/MM/yy', { locale: es })}
+                      </>
+                    ) : (
+                      format(dateRangeFilter.from, 'dd/MM/yy', { locale: es })
+                    )
+                  ) : (
+                    <span>Filtrar por fechas</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={dateRangeFilter?.from}
+                  selected={dateRangeFilter}
+                  onSelect={setDateRangeFilter}
+                  numberOfMonths={2}
+                  captionLayout="dropdown"
+                  fromYear={2020}
+                  toYear={new Date().getFullYear() + 2}
+                />
+              </PopoverContent>
+            </Popover>
             <Select value={hrStatusFilter} onValueChange={setHrStatusFilter}>
               <SelectTrigger className="w-[140px]">
                 <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <Filter className="h-4 w-4" />
                   <SelectValue placeholder="Estado" />
                 </div>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">Todos</SelectItem>
-                <SelectItem value="PENDING">Pendientes</SelectItem>
-                <SelectItem value="APPROVED">Aprobadas</SelectItem>
-                <SelectItem value="REJECTED">Rechazadas</SelectItem>
+                <SelectItem value="pending">Pendientes</SelectItem>
+                <SelectItem value="approved">Aprobadas</SelectItem>
+                <SelectItem value="rejected">Rechazadas</SelectItem>
+                <SelectItem value="cancelled">Canceladas</SelectItem>
               </SelectContent>
             </Select>
+            {(requestSearch || hrStatusFilter !== 'ALL' || dateRangeFilter) && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClearFilters}
+                title="Limpiar filtros"
+              >
+                <div className="relative">
+                  <Filter className="h-4 w-4" />
+                  <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>
+                  </span>
+                </div>
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -191,14 +277,21 @@ export function HrRequestsTab({
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-center py-4">
-          <PaginationGroup
-            total={totalFilteredRequests}
-            pageSize={requestsPerPage}
-            queryKey="requestsPage"
-          />
-        </div>
       </CardContent>
+      <div className="flex items-center justify-between p-4 border-t">
+        <div className="text-sm text-muted-foreground">
+            {totalFilteredRequests > 0 ? (
+               `Mostrando ${((currentPage - 1) * requestsPerPage) + 1} a ${Math.min(currentPage * requestsPerPage, totalFilteredRequests)} de ${totalFilteredRequests} solicitudes`
+            ) : (
+                'No se encontraron solicitudes'
+            )}
+        </div>
+        <PaginationGroup
+          total={totalFilteredRequests}
+          pageSize={requestsPerPage}
+          queryKey="requestsPage"
+        />
+      </div>
     </Card>
   )
 }
