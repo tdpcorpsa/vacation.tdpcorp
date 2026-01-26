@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { EmployeesEdit } from './employees-edit'
 import { EmployeeWithUser } from '@/hooks/employees/use-employees-list'
+import CanAccess from '@/components/ui/can-access'
 
 interface EmployeesActionsProps {
   employee: EmployeeWithUser
@@ -20,7 +21,12 @@ export function EmployeesActions({ employee }: EmployeesActionsProps) {
   const [openEdit, setOpenEdit] = useState(false)
 
   return (
-    <>
+    <CanAccess
+      subdomain="vacation"
+      resource="employees"
+      action="edit"
+      variant="hidden"
+    >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -43,6 +49,6 @@ export function EmployeesActions({ employee }: EmployeesActionsProps) {
           onOpenChange={setOpenEdit}
         />
       )}
-    </>
+    </CanAccess>
   )
 }

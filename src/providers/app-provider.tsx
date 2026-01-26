@@ -56,8 +56,8 @@ export default function AppProvider({
     if (sub) {
       setSubdomain(sub)
     } else {
-      // If no subdomain found, we might want to set loading to false?
-      setSubdomain('')
+      // If no subdomain found, default to 'vacation' for development/local
+      setSubdomain('vacation')
     }
   }, [])
 

@@ -6,6 +6,8 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import {
+  MoreHorizontal,
+  Pencil,
   User,
   Mail,
   Phone,
@@ -14,21 +16,56 @@ import {
   UserCheck,
 } from 'lucide-react'
 import { EmployeeSummary } from '@/hooks/dashboard/use-dashboard-data'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import CanAccess from '@/components/ui/can-access'
 
 interface EmployeeInfoCardProps {
   employeeSummary: EmployeeSummary | null
+  onEditEmployee: () => void
 }
 
-export function EmployeeInfoCard({ employeeSummary }: EmployeeInfoCardProps) {
+export function EmployeeInfoCard({
+  employeeSummary,
+  onEditEmployee,
+}: EmployeeInfoCardProps) {
   return (
     <Card className="lg:col-span-3 h-full flex flex-col">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">
-          Información del Empleado
-        </CardTitle>
-        <CardDescription>
-          Resumen de datos personales y laborales.
-        </CardDescription>
+      <CardHeader className="pb-2 flex flex-row items-start justify-between space-y-0">
+        <div className="space-y-1.5">
+          <CardTitle className="text-sm font-medium">
+            Información del Empleado
+          </CardTitle>
+          <CardDescription>
+            Resumen de datos personales y laborales.
+          </CardDescription>
+        </div>
+        <CanAccess
+          subdomain="vacation"
+          resource="employees"
+          action="edit"
+          variant="hidden"
+        >
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Abrir menú</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={onEditEmployee}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Editar
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </CanAccess>
       </CardHeader>
       <CardContent className="space-y-3 text-xs flex-1">
         <div className="flex items-center gap-2">

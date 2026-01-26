@@ -9,6 +9,7 @@ type CanAccessProps = {
   subdomain: string
   resource: string
   action: string
+  fallbackReadId?: boolean
 } & ForbiddenProps
 
 export default function CanAccess({
@@ -17,6 +18,7 @@ export default function CanAccess({
   action,
   variant,
   children,
+  fallbackReadId = true,
 }: CanAccessProps) {
   const { canAccess } = usePerms()
   const { isLoading } = useProfileContext()
@@ -30,7 +32,7 @@ export default function CanAccess({
     )
 
   // Si la variante es 'page' y la acción es 'read', verificamos también 'readId'
-  if (variant === 'page' && action === 'read' && !hasAccess) {
+  if (variant === 'page' && action === 'read' && !hasAccess && fallbackReadId) {
     // Verificar si tiene permiso readId
     const hasReadId = canAccess(subdomain, resource, 'readId')
     if (hasReadId) return children

@@ -6,13 +6,13 @@ import { es } from 'date-fns/locale'
 
 interface PlanningSidebarProps {
   requests: EnrichedVacationRequest[]
-  selectedRequestId: string | null
+  selectedRequestIds: string[]
   onSelectRequest: (id: string | null) => void
 }
 
 export function PlanningSidebar({
   requests,
-  selectedRequestId,
+  selectedRequestIds,
   onSelectRequest,
 }: PlanningSidebarProps) {
   // Ordenar por nombre alfabéticamente
@@ -34,11 +34,11 @@ export function PlanningSidebar({
             key={req.id}
             className={cn(
               'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all',
-              selectedRequestId === req.id
+              selectedRequestIds.includes(req.id)
                 ? 'bg-primary/10 border-primary'
                 : 'bg-card hover:bg-accent/50 border-transparent hover:border-border'
             )}
-            onClick={() => onSelectRequest(selectedRequestId === req.id ? null : req.id)}
+            onClick={() => onSelectRequest(req.id)}
           >
             <Avatar className="h-10 w-10 border">
               <AvatarImage src={req.employeeProfile?.avatar_url || undefined} />
