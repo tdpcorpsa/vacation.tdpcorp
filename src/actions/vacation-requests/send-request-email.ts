@@ -2,23 +2,26 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { Tables } from '@/types/supabase.types'
+import { eachDayOfInterval, format, isSaturday, isSunday } from 'date-fns'
+import { es } from 'date-fns/locale'
 import nodemailer from 'nodemailer'
 
-type VacationRequestWithEmployee = Tables<
+type VacationRequestWithDetails = Tables<
   { schema: 'vacation' },
   'vacation_requests'
 > & {
   employee: Tables<{ schema: 'vacation' }, 'employees'> | null
+  vacation_period: Tables<{ schema: 'vacation' }, 'vacation_periods'> | null
 }
 
 export async function sendRequestEmail(requestId: string) {
   const supabase = await createClient()
 
-  // 1. Obtener la solicitud y el empleado
+  // 1. Obtener la solicitud, el empleado y el periodo
   const { data: request, error: requestError } = await supabase
     .schema('vacation')
     .from('vacation_requests')
-    .select('*, employee:employees(*)')
+    .select('*, employee:employees(*), vacation_period:vacation_periods(*)')
     .eq('id', requestId)
     .single()
 
@@ -26,18 +29,32 @@ export async function sendRequestEmail(requestId: string) {
     throw new Error('No se pudo encontrar la solicitud')
   }
 
-  // 2. Obtener el manager del empleado
-  // Nota: request.employee es un array o un objeto dependiendo de la relación,
-  // pero al usar select(*, employee:employees(*)) y ser FK, debería ser un objeto.
-  // Sin embargo, typescript puede quejar. Lo trataremos con cuidado.
-  // Mejor hacemos una consulta separada si es necesario, pero intentemos usar lo que tenemos.
-
-  const typedRequest = request as VacationRequestWithEmployee
+  const typedRequest = request as VacationRequestWithDetails
   const employee = typedRequest.employee
+  const vacationPeriod = typedRequest.vacation_period
 
   if (!employee || !employee.manager_id) {
     throw new Error('El empleado no tiene un jefe asignado')
   }
+
+  // 2. Calcular días de fin de semana
+  // Aseguramos que las fechas se interpreten correctamente agregando la hora para evitar desfases de zona horaria al iniciar el día
+  const startDate = new Date(`${request.start_date}T00:00:00`)
+  const endDate = new Date(`${request.end_date}T00:00:00`)
+  
+  const daysInterval = eachDayOfInterval({
+    start: startDate,
+    end: endDate,
+  })
+
+  const weekendDays = daysInterval.filter(
+    (day) => isSaturday(day) || isSunday(day)
+  ).length
+
+  const formattedStartDate = format(startDate, "d 'de' MMMM, yyyy", {
+    locale: es,
+  })
+  const formattedEndDate = format(endDate, "d 'de' MMMM, yyyy", { locale: es })
 
   // 3. Obtener el email del manager
   const { data: managerProfile, error: managerError } = await supabase
@@ -80,16 +97,18 @@ export async function sendRequestEmail(requestId: string) {
     from: process.env.SMTP_USER || 'sahid.vilic@tdpcorp.com.pe',
     to: managerProfile.email,
     cc: employeeProfile.email,
-    subject: `Solicitud de Vacaciones: ${employeeProfile.first_name} ${employeeProfile.last_name} (REQ: ${request.id}) (EMP: ${employee.id})`,
+    subject: `Solicitud de Vacaciones: ${employeeProfile.first_name} ${employeeProfile.last_name} (REQ: ${request.id})`,
     text: `
       Solicitud de Vacaciones
       Estimado(a) ${managerProfile.first_name} ${managerProfile.last_name},
 
-      El empleado ${employeeProfile.first_name} ${employeeProfile.last_name} con ID ${employee.id} ha solicitado vacaciones.
+      El empleado ${employeeProfile.first_name} ${employeeProfile.last_name} ha solicitado vacaciones.
 
-      Fecha Inicio: ${request.start_date}
-      Fecha Fin: ${request.end_date}
-      Días Totales: ${request.total_days}
+      Periodo: ${vacationPeriod?.period_label || 'No especificado'}
+      Desde: ${formattedStartDate}
+      Hasta: ${formattedEndDate}
+      Total de días: ${request.total_days}
+      Días de fin de semana (Sáb/Dom): ${weekendDays}
       Nota: ${request.request_note || 'Ninguna'}
 
       Responda a este correo para aprobar o rechazar.
@@ -98,12 +117,14 @@ export async function sendRequestEmail(requestId: string) {
       <h3>Solicitud de Vacaciones</h3>
       <p>Estimado(a) <strong>${managerProfile.first_name} ${managerProfile.last_name}</strong>,</p>
       
-      <p>El empleado <strong>${employeeProfile.first_name} ${employeeProfile.last_name}</strong> con ID <strong>${employee.id}</strong> ha solicitado vacaciones.</p>
+      <p>El empleado <strong>${employeeProfile.first_name} ${employeeProfile.last_name}</strong> ha solicitado vacaciones.</p>
       
       <p>
-        <strong>Fecha Inicio:</strong> ${request.start_date}<br/>
-        <strong>Fecha Fin:</strong> ${request.end_date}<br/>
-        <strong>Días Totales:</strong> ${request.total_days}<br/>
+        <strong>Periodo:</strong> ${vacationPeriod?.period_label || 'No especificado'}<br/>
+        <strong>Desde:</strong> ${formattedStartDate}<br/>
+        <strong>Hasta:</strong> ${formattedEndDate}<br/>
+        <strong>Total de días:</strong> ${request.total_days}<br/>
+        <strong>Días de fin de semana (Sáb/Dom):</strong> ${weekendDays}<br/>
         <strong>Nota:</strong> ${request.request_note || 'Ninguna'}
       </p>
       
