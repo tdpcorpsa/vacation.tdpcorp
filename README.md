@@ -10,6 +10,8 @@ Sistema de gesti√≥n de vacaciones corporativo que permite el registro, aprobaci√
 - `NEXT_PUBLIC_DOMAIN`
 - `NEXT_PUBLIC_LOGIN`
 - `NEXT_PUBLIC_AUTH_URL`
+- `SMTP_USER`
+- `SMTP_PASS` 
 
 ## Iniciar el proyecto
 
