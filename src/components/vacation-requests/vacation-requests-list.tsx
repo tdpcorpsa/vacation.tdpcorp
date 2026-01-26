@@ -1,7 +1,6 @@
 'use client'
 
 import { VacationRequestsActions } from './vacation-requests-actions'
-import { VacationRequestsView } from './vacation-requests-view'
 import {
   useVacationRequestsList,
   VacationRequestWithProfiles,
@@ -36,6 +35,8 @@ import {
 } from '@tanstack/react-table'
 import { LayoutGrid, List, Table as TableIcon } from 'lucide-react'
 import { useState } from 'react'
+import { RequestDetailDialog } from '@/components/dashboard/request-detail-dialog'
+import { useVacationPeriodsList } from '@/hooks/vacation-periods/use-vacation-periods-list'
 
 export function VacationRequestsList() {
   const { page, pageSize } = usePagination()
@@ -49,6 +50,11 @@ export function VacationRequestsList() {
   const { data, isLoading } = useVacationRequestsList({
     pagination: { page, pageSize },
     search,
+  })
+
+  // Obtener periodos para el detalle
+  const { data: periods } = useVacationPeriodsList({
+    employeeId: viewRequest?.employee_id,
   })
 
   const columns: ColumnDef<VacationRequestWithProfiles>[] = [
@@ -171,7 +177,13 @@ export function VacationRequestsList() {
       header: () => <div className="text-right">Acciones</div>,
       cell: ({ row }) => (
         <div className="flex justify-end">
-          <VacationRequestsActions request={row.original} />
+          <VacationRequestsActions
+            request={row.original}
+            onViewDetail={() => {
+              setViewRequest(row.original)
+              setIsViewOpen(true)
+            }}
+          />
         </div>
       ),
     },
@@ -321,7 +333,13 @@ export function VacationRequestsList() {
                       {request.status}
                     </span>
                     <div onClick={(e) => e.stopPropagation()}>
-                      <VacationRequestsActions request={request} />
+                      <VacationRequestsActions
+                        request={request}
+                        onViewDetail={() => {
+                          setViewRequest(request)
+                          setIsViewOpen(true)
+                        }}
+                      />
                     </div>
                   </div>
                 </Item>
@@ -344,7 +362,13 @@ export function VacationRequestsList() {
                         ? `${request.employee_profile.first_name} ${request.employee_profile.last_name}`
                         : 'Empleado'}
                     </CardTitle>
-                    <VacationRequestsActions request={request} />
+                    <VacationRequestsActions
+                      request={request}
+                      onViewDetail={() => {
+                        setViewRequest(request)
+                        setIsViewOpen(true)
+                      }}
+                    />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">
@@ -387,15 +411,23 @@ export function VacationRequestsList() {
             </div>
           )}
 
-          <VacationRequestsView
+          <RequestDetailDialog
             open={isViewOpen}
             onOpenChange={setIsViewOpen}
-            request={viewRequest}
+            request={viewRequest || null}
+            periods={periods?.data || []}
           />
         </>
       )}
 
-      <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          Mostrando {data?.data.length ? (page - 1) * pageSize + 1 : 0} a{' '}
+          {Math.min(page * pageSize, data?.total || 0)} de {data?.total || 0}{' '}
+          solicitudes
+        </div>
+        <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
+      </div>
     </div>
   )
 }

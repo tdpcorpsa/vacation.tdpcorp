@@ -15,6 +15,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { cn } from '@/lib/utils'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 import { useLaborRegimeList } from '@/hooks/employees/use-labor-regime-list'
 import { usePotentialEmployees } from '@/hooks/employees/use-potential-employees'
 import { useManagersList } from '@/hooks/employees/use-managers-list'
@@ -77,7 +88,54 @@ export function EmployeesForm({ mode, currentEmployeeId }: EmployeesFormProps) {
       <Field>
         <FieldLabel htmlFor="hire_date">Fecha de Contratación</FieldLabel>
         <FieldContent>
-          <Input id="hire_date" type="date" {...register('hire_date')} />
+          <Controller
+            control={control}
+            name="hire_date"
+            render={({ field }) => (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={'outline'}
+                    className={cn(
+                      'w-full justify-start text-left font-normal',
+                      !field.value && 'text-muted-foreground'
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {field.value ? (
+                      format(
+                        (() => {
+                          const [y, m, d] = field.value.split('-').map(Number)
+                          return new Date(y, m - 1, d)
+                        })(),
+                        'PPP',
+                        { locale: es }
+                      )
+                    ) : (
+                      <span>Seleccione una fecha</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={
+                      field.value
+                        ? (() => {
+                            const [y, m, d] = field.value.split('-').map(Number)
+                            return new Date(y, m - 1, d)
+                          })()
+                        : undefined
+                    }
+                    onSelect={(date) =>
+                      field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
+          />
           <FieldError errors={[errors.hire_date]} />
         </FieldContent>
       </Field>

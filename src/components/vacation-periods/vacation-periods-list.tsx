@@ -24,7 +24,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { LayoutGrid, List, Table as TableIcon } from 'lucide-react'
+import { LayoutGrid, List, Table as TableIcon, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import usePerms from '@/hooks/auth/use-perms'
 import { useProfileContext } from '@/providers/profile-provider'
@@ -122,9 +122,12 @@ export function VacationPeriodsList() {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 flex-1">
           <EmployeesSelect
-            value={selectedEmployeeId}
-            onValueChange={setSelectedEmployeeId}
+            value={selectedEmployeeId || 'all'}
+            onValueChange={(val) =>
+              setSelectedEmployeeId(val === 'all' ? undefined : val)
+            }
             disabled={!canReadAll && canReadId}
+            showAllOption={canReadAll}
           />
           <Input
             placeholder="Buscar periodo..."
@@ -132,6 +135,19 @@ export function VacationPeriodsList() {
             onChange={(e) => setSearch(e.target.value)}
             className="max-w-sm"
           />
+          {(search || (selectedEmployeeId && canReadAll)) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                setSearch('')
+                setSelectedEmployeeId(undefined)
+              }}
+              className="h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center rounded-md border p-1">
@@ -279,9 +295,14 @@ export function VacationPeriodsList() {
         </>
       )}
 
-      {selectedEmployeeId && (
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          Mostrando {data?.data.length ? (page - 1) * pageSize + 1 : 0} a{' '}
+          {Math.min(page * pageSize, data?.total || 0)} de {data?.total || 0}{' '}
+          periodos
+        </div>
         <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
-      )}
+      </div>
     </div>
   )
 }

@@ -3,9 +3,20 @@ import { z } from 'zod'
 export const VacationRequestSchema = z
   .object({
     employee_id: z.string().optional(), // Temporal para pruebas
-    start_date: z.string().nonempty('La fecha de inicio es requerida'),
-    end_date: z.string().nonempty('La fecha de fin es requerida'),
-    request_note: z.string().optional(),
+    start_date: z
+      .string({
+        message: 'La fecha de inicio es requerida',
+      })
+      .min(1, 'La fecha de inicio es requerida'),
+    end_date: z
+      .string({
+        message: 'La fecha de fin es requerida',
+      })
+      .min(1, 'La fecha de fin es requerida'),
+    request_note: z
+      .string()
+      .max(150, 'La nota no puede exceder los 150 caracteres')
+      .optional(),
     vacation_period_id: z
       .string()
       .uuid('El periodo de vacaciones es requerido'),

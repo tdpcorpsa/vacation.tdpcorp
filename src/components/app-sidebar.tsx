@@ -27,6 +27,8 @@ import { NavUser } from '@/components/profile/user-nav'
 import { useAppContext } from '@/providers/app-provider'
 import AppListMenu from './apps/app-list-menu'
 import { Avatar, AvatarFallback } from './ui/avatar'
+import usePerms from '@/hooks/auth/use-perms'
+import { useProfileContext } from '@/providers/profile-provider'
 
 type MenuItem = {
   title: string
@@ -41,14 +43,14 @@ const menuItems: MenuItem[] = [
     icon: LayoutDashboard,
   },
   {
-    title: 'Empleados',
-    url: '/employees',
-    icon: Users,
-  },
-  {
     title: 'Solicitudes',
     url: '/vacation-requests',
     icon: FileText,
+  },
+  {
+    title: 'Empleados',
+    url: '/employees',
+    icon: Users,
   },
   {
     title: 'Periodos',
@@ -69,8 +71,27 @@ export function AppSidebar() {
   const pathname = usePathname()
   const { currentApp } = useAppContext()
   const { state } = useSidebar()
+  const { canAccess } = usePerms()
+  const { profile } = useProfileContext()
 
   const isCollapsed = state === 'collapsed'
+
+  const filteredMenuItems = menuItems.filter((item) => {
+    if (item.url === '/employees') {
+      return canAccess('vacation', 'employees', 'read')
+    }
+    if (item.url === '/vacation-periods') {
+      return canAccess('vacation', 'vacation_periods', 'read')
+    }
+    return true
+  })
+
+  const filteredMenu2Items = Menu2Items.filter((item) => {
+    if (item.url === '/labor-regimes') {
+      return profile?.is_superuser
+    }
+    return true
+  })
 
   return (
     <Sidebar collapsible="icon">
@@ -127,7 +148,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navegación</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {filteredMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
@@ -144,27 +165,29 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Configuración</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {Menu2Items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.url}
-                    tooltip={item.title}
-                  >
-                    <Link href={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {filteredMenu2Items.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Configuración</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredMenu2Items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.url}
+                      tooltip={item.title}
+                    >
+                      <Link href={item.url}>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter className={isCollapsed ? 'p-2' : 'p-4'}>

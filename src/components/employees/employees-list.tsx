@@ -38,15 +38,14 @@ export function EmployeesList() {
 
   return (
     <div className="space-y-4">
-      <div className="mx-auto w-[95%] space-y-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="w-full sm:w-72">
-            <SearchInput placeholder="Buscar por nombre o email..." />
-          </div>
-          <SelectView />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="w-full max-w-sm">
+          <SearchInput placeholder="Buscar por nombre o email..." />
         </div>
+        <SelectView />
+      </div>
 
-        {isLoading ? (
+      {isLoading ? (
           <SkeletonList count={5} />
         ) : !data?.data || data.data.length === 0 ? (
           <div className="flex min-h-[400px] flex-col items-center justify-center rounded-md border border-dashed p-8 text-center animate-in fade-in-50">
@@ -277,7 +276,11 @@ export function EmployeesList() {
               </div>
             )}
 
-            <div className="flex justify-center">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                Mostrando {data.total === 0 ? 0 : (pagination.page - 1) * pagination.pageSize + 1} a{' '}
+                {Math.min(pagination.page * pagination.pageSize, data.total)} de {data.total} empleados
+              </div>
               <PaginationGroup
                 total={data.total}
                 pageSize={pagination.pageSize}
@@ -285,7 +288,6 @@ export function EmployeesList() {
             </div>
           </>
         )}
-      </div>
     </div>
   )
 }

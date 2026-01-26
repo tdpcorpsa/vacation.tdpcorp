@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import useUser from '@/hooks/auth/use-user'
 
+import { isWithinInterval, startOfDay } from 'date-fns'
+
 export type VacationPeriod = Tables<{ schema: 'vacation' }, 'vacation_periods'>
 export type VacationRequest = Tables<
   { schema: 'vacation' },
@@ -18,6 +20,8 @@ export type EmployeeSummary = {
   laborRegime: LaborRegimeRow | null
   managerProfile: ProfileRow | null
   roleDescription: string | null
+  isOnVacation: boolean
+  currentVacation?: VacationRequest
 }
 
 export type DashboardData = {
@@ -126,6 +130,28 @@ export function useDashboardData() {
         laborRegime: laborRegime ?? null,
         managerProfile,
         roleDescription: null,
+        isOnVacation: (requests ?? []).some((req) => {
+          if (req.status !== 'APPROVED') return false
+          const [sy, sm, sd] = req.start_date.split('-').map(Number)
+          const startDate = new Date(sy, sm - 1, sd)
+          const [ey, em, ed] = req.end_date.split('-').map(Number)
+          const endDate = new Date(ey, em - 1, ed)
+
+          const today = startOfDay(new Date())
+
+          return isWithinInterval(today, { start: startDate, end: endDate })
+        }),
+        currentVacation: (requests ?? []).find((req) => {
+          if (req.status !== 'APPROVED') return false
+          const [sy, sm, sd] = req.start_date.split('-').map(Number)
+          const startDate = new Date(sy, sm - 1, sd)
+          const [ey, em, ed] = req.end_date.split('-').map(Number)
+          const endDate = new Date(ey, em - 1, ed)
+
+          const today = startOfDay(new Date())
+
+          return isWithinInterval(today, { start: startDate, end: endDate })
+        }),
       }
 
       return {

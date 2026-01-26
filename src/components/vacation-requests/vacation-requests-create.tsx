@@ -54,7 +54,19 @@ export function VacationRequestsCreate({
       toast.error('No se pudo identificar al usuario creador')
       return
     }
+    
+    // Validaciones de negocio manuales
+    if (!data.vacation_period_id) {
+        toast.error('Debe haber un periodo vacacional activo seleccionado.')
+        return
+    }
 
+    if (!data.start_date || !data.end_date) {
+        toast.error('Debe seleccionar un rango de fechas válido.')
+        return
+    }
+    
+    
     mutate(
       {
         ...data,
@@ -76,6 +88,11 @@ export function VacationRequestsCreate({
     }
   }, [open, form])
 
+  const onInvalid = (errors: any) => {
+    // Feedback visual general si hay errores
+    toast.error('Por favor corrija los errores en el formulario antes de guardar.')
+  }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-md">
@@ -87,12 +104,16 @@ export function VacationRequestsCreate({
         </SheetHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit, onInvalid)}
             className="flex flex-col gap-4 py-4 px-4"
           >
             <VacationRequestsForm />
             <SheetFooter className="px-0">
-              <Button type="submit" disabled={isPending} className="w-full">
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="w-full"
+              >
                 {isPending ? 'Guardando...' : 'Guardar'}
               </Button>
             </SheetFooter>
