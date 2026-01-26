@@ -21,9 +21,14 @@ import { RequestDetailDialog } from '@/components/dashboard/request-detail-dialo
 import CanAccess from '@/components/ui/can-access'
 import { useRouter } from 'next/navigation'
 import { useDashboardController } from '@/hooks/dashboard/use-dashboard-controller'
+import { VacationRequestsCreate } from '@/components/vacation-requests/vacation-requests-create'
+import { EmployeesEdit } from '@/components/employees/employees-edit'
+import { EmployeeWithUser } from '@/hooks/employees/use-employees-list'
 
 export default function DashboardPage() {
   const router = useRouter()
+  const [isCreateRequestOpen, setIsCreateRequestOpen] = React.useState(false)
+  const [isEditEmployeeOpen, setIsEditEmployeeOpen] = React.useState(false)
   
   const {
     activeTab,
@@ -53,6 +58,22 @@ export default function DashboardPage() {
     selectedRequest,
     hrData,
   } = useDashboardController()
+
+  const employeeForEdit: EmployeeWithUser | undefined = employeeSummary
+    ? {
+        ...employeeSummary.employee,
+        profile: employeeSummary.profile || {
+          first_name: '',
+          last_name: '',
+          email: '',
+          avatar_url: null,
+          id: employeeSummary.employee.id,
+        },
+        labor_regime: employeeSummary.laborRegime,
+        manager: employeeSummary.managerProfile,
+        is_on_vacation: false,
+      }
+    : undefined
 
   return (
     <CanAccess
@@ -132,14 +153,20 @@ export default function DashboardPage() {
 
             {activeTab === 'my-data' && (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                <EmployeeInfoCard employeeSummary={employeeSummary} />
+                <EmployeeInfoCard
+                  employeeSummary={employeeSummary}
+                  onEditEmployee={() => setIsEditEmployeeOpen(true)}
+                />
                 <PeriodSummaryCard
                   selectedPeriodId={selectedPeriodId}
                   setSelectedPeriodId={setSelectedPeriodId}
                   periods={periods}
                   periodTotals={periodTotals}
                 />
-                <UpcomingVacationsCard upcomingVacations={upcomingVacations} />
+                <UpcomingVacationsCard
+                  upcomingVacations={upcomingVacations}
+                  onCreateRequest={() => setIsCreateRequestOpen(true)}
+                />
               </div>
             )}
           </>
@@ -151,6 +178,19 @@ export default function DashboardPage() {
           request={selectedRequest}
           periods={activeTab === 'my-data' ? periods : hrData?.periods || []}
         />
+
+        <VacationRequestsCreate
+          open={isCreateRequestOpen}
+          onOpenChange={setIsCreateRequestOpen}
+        />
+
+        {employeeForEdit && (
+          <EmployeesEdit
+            employee={employeeForEdit}
+            open={isEditEmployeeOpen}
+            onOpenChange={setIsEditEmployeeOpen}
+          />
+        )}
       </div>
     </CanAccess>
   )

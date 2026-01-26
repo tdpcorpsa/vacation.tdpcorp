@@ -6,7 +6,6 @@ import { es } from 'date-fns/locale'
 
 import { useEmployeesList } from '@/hooks/employees/use-employees-list'
 import { EmployeesActions } from './employees-actions'
-import { PageHeader } from '@/components/ui/page-header'
 import { SelectView, useView } from '@/components/ui/select-view'
 import { SearchInput } from '@/components/ui/search-input'
 import { PaginationGroup } from '@/components/ui/pagination-group'
@@ -24,6 +23,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { SkeletonList } from '@/components/ui/skeleton-list'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
+import { Badge } from '@/components/ui/badge'
+
 export function EmployeesList() {
   const { page, pageSize } = usePagination()
   const pagination = { page, pageSize }
@@ -37,11 +38,6 @@ export function EmployeesList() {
 
   return (
     <div className="space-y-4">
-      <PageHeader
-        title="Empleados"
-        description="Gestión de empleados de la empresa."
-      />
-
       <div className="mx-auto w-[95%] space-y-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="w-full sm:w-72">
@@ -83,7 +79,10 @@ export function EmployeesList() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Empleado</TableHead>
+                      <TableHead>Regimen Laboral</TableHead>
+                      <TableHead>Jefe Directo</TableHead>
                       <TableHead>Fecha Ingreso</TableHead>
+                      <TableHead>Estado</TableHead>
                       <TableHead className="text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -111,6 +110,27 @@ export function EmployeesList() {
                           </div>
                         </TableCell>
                         <TableCell>
+                          {employee.labor_regime?.name || '-'}
+                        </TableCell>
+                        <TableCell>
+                          {employee.manager ? (
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-6 w-6">
+                                <AvatarImage
+                                  src={employee.manager.avatar_url || ''}
+                                />
+                                <AvatarFallback className="text-xs">
+                                  {employee.manager.first_name?.[0]}
+                                  {employee.manager.last_name?.[0]}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-sm">
+                                {employee.manager.first_name} {employee.manager.last_name}
+                              </span>
+                            </div>
+                          ) : '-'}
+                        </TableCell>
+                        <TableCell>
                           {employee.hire_date
                             ? format(
                                 new Date(employee.hire_date),
@@ -120,6 +140,13 @@ export function EmployeesList() {
                                 }
                               )
                             : '-'}
+                        </TableCell>
+                        <TableCell>
+                          {employee.is_on_vacation ? (
+                            <Badge variant="warning">De Vacaciones</Badge>
+                          ) : (
+                            <Badge variant="success">Activo</Badge>
+                          )}
                         </TableCell>
                         <TableCell className="text-right">
                           <EmployeesActions employee={employee} />
@@ -157,13 +184,30 @@ export function EmployeesList() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
+                      <div className="text-sm">
+                        <span className="text-muted-foreground mr-1">Regimen:</span>
+                        {employee.labor_regime?.name || '-'}
+                      </div>
+                      <div className="text-sm">
+                        <span className="text-muted-foreground mr-1">Jefe:</span>
+                        {employee.manager 
+                          ? `${employee.manager.first_name} ${employee.manager.last_name}`
+                          : '-'}
+                      </div>
                       <div className="text-sm text-muted-foreground">
                         {employee.hire_date
                           ? format(new Date(employee.hire_date), 'dd/MM/yyyy', {
                               locale: es,
                             })
                           : '-'}
+                      </div>
+                      <div>
+                        {employee.is_on_vacation ? (
+                          <Badge variant="warning">De Vacaciones</Badge>
+                        ) : (
+                          <Badge variant="success">Activo</Badge>
+                        )}
                       </div>
                       <EmployeesActions employee={employee} />
                     </div>
@@ -198,18 +242,33 @@ export function EmployeesList() {
                           <p className="text-sm text-muted-foreground">
                             {employee.profile?.email}
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            Ingreso:{' '}
-                            {employee.hire_date
-                              ? format(
-                                  new Date(employee.hire_date),
-                                  'dd/MM/yyyy',
-                                  {
-                                    locale: es,
-                                  }
-                                )
-                              : '-'}
-                          </p>
+                          <div className="text-xs text-muted-foreground space-y-1">
+                            <p>
+                              Ingreso:{' '}
+                              {employee.hire_date
+                                ? format(
+                                    new Date(employee.hire_date),
+                                    'dd/MM/yyyy',
+                                    {
+                                      locale: es,
+                                    }
+                                  )
+                                : '-'}
+                            </p>
+                            <p>Regimen: {employee.labor_regime?.name || '-'}</p>
+                            <p>
+                              Jefe: {employee.manager 
+                                ? `${employee.manager.first_name} ${employee.manager.last_name}`
+                                : '-'}
+                            </p>
+                            <div className="pt-1">
+                              {employee.is_on_vacation ? (
+                                <Badge variant="warning" className="text-[10px] px-1 py-0 h-5">De Vacaciones</Badge>
+                              ) : (
+                                <Badge variant="success" className="text-[10px] px-1 py-0 h-5">Activo</Badge>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </CardContent>

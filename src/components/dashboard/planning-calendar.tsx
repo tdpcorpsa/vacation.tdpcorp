@@ -19,7 +19,7 @@ import { CalendarEvent } from './planning-types'
 
 interface PlanningCalendarProps {
   requests: EnrichedVacationRequest[]
-  selectedRequestId: string | null
+  selectedRequestIds: string[]
 }
 
 // Paleta de colores vibrantes estilo "Google Calendar" o similar
@@ -44,19 +44,21 @@ const getEventColor = (id: string) => {
 
 export function PlanningCalendar({
   requests,
-  selectedRequestId,
+  selectedRequestIds,
 }: PlanningCalendarProps) {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
 
   // Sincronizar mes con la selección
   useEffect(() => {
-    if (selectedRequestId) {
-      const req = requests.find((r) => r.id === selectedRequestId)
+    if (selectedRequestIds.length > 0) {
+      // Usar el último seleccionado para mover el calendario
+      const lastId = selectedRequestIds[selectedRequestIds.length - 1]
+      const req = requests.find((r) => r.id === lastId)
       if (req) {
         setCurrentDate(new Date(req.start_date))
       }
     }
-  }, [selectedRequestId, requests])
+  }, [selectedRequestIds, requests])
 
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
@@ -173,7 +175,7 @@ export function PlanningCalendar({
               weekEnd={week.end}
               events={events}
               currentMonth={currentDate}
-              selectedRequestId={selectedRequestId}
+              selectedRequestIds={selectedRequestIds}
             />
           ))}
         </div>

@@ -17,7 +17,29 @@ interface HrPlanningTabProps {
 
 export function HrPlanningTab({ requests }: HrPlanningTabProps) {
   const { activeRequests } = usePlanningRequests(requests)
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
+  const [selectedRequestIds, setSelectedRequestIds] = useState<string[]>([])
+
+  const handleSelectRequest = (id: string | null) => {
+    if (!id) {
+      setSelectedRequestIds([])
+      return
+    }
+
+    setSelectedRequestIds((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((prevId) => prevId !== id)
+      }
+
+      if (prev.length >= 3) {
+        // Opción A: No permitir más de 3 (usuario debe deseleccionar)
+        // return prev
+        // Opción B: FIFO (reemplazar el más antiguo) - Más fluido
+        return [...prev.slice(1), id]
+      }
+
+      return [...prev, id]
+    })
+  }
 
   return (
     <Card className="h-full">
@@ -30,8 +52,8 @@ export function HrPlanningTab({ requests }: HrPlanningTabProps) {
           <div className="lg:w-1/4 h-full lg:border-r lg:pr-4 overflow-hidden">
             <PlanningSidebar
               requests={activeRequests}
-              selectedRequestId={selectedRequestId}
-              onSelectRequest={setSelectedRequestId}
+              selectedRequestIds={selectedRequestIds}
+              onSelectRequest={handleSelectRequest}
             />
           </div>
 
@@ -39,7 +61,7 @@ export function HrPlanningTab({ requests }: HrPlanningTabProps) {
           <div className="lg:w-3/4 h-full overflow-hidden">
             <PlanningCalendar
               requests={activeRequests}
-              selectedRequestId={selectedRequestId}
+              selectedRequestIds={selectedRequestIds}
             />
           </div>
         </div>

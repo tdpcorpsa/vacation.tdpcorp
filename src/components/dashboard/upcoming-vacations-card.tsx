@@ -7,10 +7,12 @@ import { useRouter } from 'next/navigation'
 
 interface UpcomingVacationsCardProps {
   upcomingVacations: VacationRequest[]
+  onCreateRequest: () => void
 }
 
 export function UpcomingVacationsCard({
   upcomingVacations,
+  onCreateRequest,
 }: UpcomingVacationsCardProps) {
   const router = useRouter()
 
@@ -79,7 +81,7 @@ export function UpcomingVacationsCard({
           <Button
             className="w-full bg-black text-white hover:bg-black/90 dark:bg:white dark:text-black dark:hover:bg-white/90 transition-all hover:scale-[1.02] shadow-sm"
             size="sm"
-            onClick={() => router.push('/vacation-requests?action=create')}
+            onClick={onCreateRequest}
           >
             Solicita tus próximas vacaciones
           </Button>

@@ -31,7 +31,7 @@ interface WeekRowProps {
   weekEnd: Date
   events: CalendarEvent[]
   currentMonth: Date
-  selectedRequestId: string | null
+  selectedRequestIds: string[]
 }
 
 export function WeekRow({
@@ -39,7 +39,7 @@ export function WeekRow({
   weekEnd,
   events,
   currentMonth,
-  selectedRequestId,
+  selectedRequestIds,
 }: WeekRowProps) {
   const MAX_VISIBLE_ROWS = 4
 
@@ -69,8 +69,8 @@ export function WeekRow({
     // 3. Ordenar por prioridad (seleccionado primero) y luego lógica visual
     positioned.sort((a, b) => {
       // Prioridad absoluta al seleccionado
-      const isSelectedA = a.id === selectedRequestId
-      const isSelectedB = b.id === selectedRequestId
+      const isSelectedA = selectedRequestIds.includes(a.id)
+      const isSelectedB = selectedRequestIds.includes(b.id)
       if (isSelectedA && !isSelectedB) return -1
       if (!isSelectedA && isSelectedB) return 1
 
@@ -128,7 +128,7 @@ export function WeekRow({
     })
 
     return { visibleEvents: visible, overflowByCol: overflow }
-  }, [weekStart, weekEnd, events, selectedRequestId])
+  }, [weekStart, weekEnd, events, selectedRequestIds])
 
   // Altura dinámica basada en el contenido
   const maxRowIndex =
@@ -187,8 +187,8 @@ export function WeekRow({
         {/* Contenedor relativo para posicionar eventos absolutos dentro de la grid */}
         <div className="col-span-7 relative h-full">
           {visibleEvents.map((evt) => {
-            const isSelected = selectedRequestId === evt.id
-            const isDimmed = selectedRequestId && !isSelected
+            const isSelected = selectedRequestIds.includes(evt.id)
+            const isDimmed = selectedRequestIds.length > 0 && !isSelected
 
             return (
               <div

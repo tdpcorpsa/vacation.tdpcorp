@@ -9,6 +9,7 @@ type ProfilePartial = Pick<
   Database['public']['Tables']['profiles']['Row'],
   'id' | 'first_name' | 'last_name' | 'email' | 'avatar_url'
 >
+type LaborRegime = Database['vacation']['Tables']['labor_regime']['Row']
 
 export type EmployeeWithUser = Employee & {
   profile:
@@ -19,6 +20,9 @@ export type EmployeeWithUser = Employee & {
         email: string
         avatar_url: null
       }
+  labor_regime?: LaborRegime | null
+  manager?: ProfilePartial | null
+  is_on_vacation?: boolean
 }
 
 export const useEmployeesList = (params?: {
@@ -31,11 +35,14 @@ export const useEmployeesList = (params?: {
   return useQuery({
     queryKey: ['employees', params?.pagination, params?.search],
     queryFn: async () => {
-      // 1. Obtener empleados
+      // 1. Obtener empleados con sus relaciones
       const { data: employees, error: employeesError } = await supabase
         .schema('vacation')
         .from('employees')
-        .select('*')
+        .select(`
+          *,
+          labor_regime:labor_regime(*)
+        `)
 
       if (employeesError) throw employeesError
       if (!employees || employees.length === 0) {
@@ -46,18 +53,42 @@ export const useEmployeesList = (params?: {
         }
       }
 
-      // 2. Obtener perfiles de esos empleados
+      // 2. Obtener perfiles de empleados y sus jefes
       const employeeIds = employees.map((e) => e.id)
+      const managerIds = employees
+        .map((e) => e.manager_id)
+        .filter((id): id is string => !!id)
+      
+      const allProfileIds = Array.from(new Set([...employeeIds, ...managerIds]))
+
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, email, avatar_url')
-        .in('id', employeeIds)
+        .in('id', allProfileIds)
 
       if (profilesError) throw profilesError
 
-      // 3. Combinar datos
+      // 3. Verificar estado de vacaciones (solicitudes aprobadas activas hoy)
+      const today = new Date().toISOString().split('T')[0]
+      const { data: activeVacations, error: vacationsError } = await supabase
+        .schema('vacation')
+        .from('vacation_requests')
+        .select('employee_id')
+        .eq('status', 'APPROVED')
+        .lte('start_date', today)
+        .gte('end_date', today)
+
+      if (vacationsError) throw vacationsError
+
+      const vacationEmployeeIds = new Set(activeVacations?.map(v => v.employee_id))
+
+      // 4. Combinar datos
       let employeesWithProfile = employees.map((emp) => {
         const profile = profiles?.find((p) => p.id === emp.id)
+        const manager = emp.manager_id 
+          ? profiles?.find((p) => p.id === emp.manager_id)
+          : null
+          
         return {
           ...emp,
           profile: profile || {
@@ -66,21 +97,28 @@ export const useEmployeesList = (params?: {
             email: '',
             avatar_url: null,
           },
+          labor_regime: emp.labor_regime as LaborRegime | null,
+          manager: manager || null,
+          is_on_vacation: vacationEmployeeIds.has(emp.id)
         }
       })
 
-      // 4. Filtrar por búsqueda
+      // 5. Filtrar por búsqueda
       if (params?.search) {
         const searchLower = params.search.toLowerCase()
         employeesWithProfile = employeesWithProfile.filter((emp) => {
           const fullName =
             `${emp.profile.first_name} ${emp.profile.last_name}`.toLowerCase()
           const email = emp.profile.email?.toLowerCase() || ''
-          return fullName.includes(searchLower) || email.includes(searchLower)
+          const laborRegimeName = emp.labor_regime?.name?.toLowerCase() || ''
+          
+          return fullName.includes(searchLower) || 
+                 email.includes(searchLower) ||
+                 laborRegimeName.includes(searchLower)
         })
       }
 
-      // 5. Paginación
+      // 6. Paginación
       const total = employeesWithProfile.length
       let pagedData = employeesWithProfile
 

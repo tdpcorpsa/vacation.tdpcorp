@@ -17,10 +17,9 @@ import {
 } from '@/components/ui/popover'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import usePerms from '@/hooks/auth/use-perms'
-import { Skeleton } from '../ui/skeleton'
 
 export default function AppListMenu() {
-  const { data, isPending } = useAppsList({
+  const { data } = useAppsList({
     pagination: {
       page: 1,
       pageSize: 100,
@@ -30,16 +29,12 @@ export default function AppListMenu() {
   const { showApp } = usePerms()
   const apps = data?.data.filter((app) => showApp(app.subdomain || '')) || []
 
-  if (isPending) {
-    return <Skeleton className="h-12 w-12" />
-  }
-
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
+        <Button 
+          variant="ghost" 
+          size="icon" 
           className="size-8 hover:bg-sidebar-accent transition-colors"
         >
           <LayoutGrid className="size-4" />
@@ -51,8 +46,11 @@ export default function AppListMenu() {
         <div className="px-4 py-3 border-b border-border bg-muted/30">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logos/ISOTIPO.svg" alt="TDP Corp" className="size-8" />
+              <img 
+                src="/logos/ISOTIPO.svg" 
+                alt="TDP Corp" 
+                className="size-8"
+              />
             </div>
             <div>
               <h3 className="text-sm font-semibold">Aplicaciones</h3>
@@ -67,18 +65,23 @@ export default function AppListMenu() {
         <div className="p-3">
           <div className="grid grid-cols-2 gap-2">
             {apps.map((app) => (
-              <Item
-                key={app.id}
-                size="sm"
+              <Item 
+                key={app.id} 
+                size="sm" 
                 asChild
                 className="hover:bg-sidebar-accent/50 transition-all duration-200 hover:shadow-sm border border-transparent hover:border-sidebar-border/50 rounded-lg"
               >
                 <Link href={app.url || '#'} target="_blank">
-                  <ItemMedia className="size-10 shrink-0 rounded-lg">
+                  <ItemMedia
+                    variant="icon"
+                    className="size-10 shrink-0 rounded-lg"
+                  >
                     <div className="relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg blur-sm" />
-                      <Avatar>
-                        <AvatarFallback>{app.name?.[0]}</AvatarFallback>
+                      <Avatar className="relative size-10 border border-sidebar-border/30">
+                        <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/5 text-primary font-semibold">
+                          {app.name?.[0]}
+                        </AvatarFallback>
                       </Avatar>
                     </div>
                   </ItemMedia>
