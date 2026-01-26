@@ -11,16 +11,18 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useVacationRequestsSendEmail } from '@/hooks/vacation-requests/use-vacation-requests-send-email'
 import { Tables } from '@/types/supabase.types'
-import { Edit, Mail, MoreHorizontal, Trash } from 'lucide-react'
+import { Edit, Mail, MoreHorizontal, Trash, Eye } from 'lucide-react'
 import { useState } from 'react'
 import CanAccess from '@/components/ui/can-access'
 
 interface VacationRequestsActionsProps {
   request: Tables<{ schema: 'vacation' }, 'vacation_requests'>
+  onViewDetail?: () => void
 }
 
 export function VacationRequestsActions({
   request,
+  onViewDetail,
 }: VacationRequestsActionsProps) {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
@@ -37,13 +39,23 @@ export function VacationRequestsActions({
             variant="ghost"
             className="h-8 w-8 p-0"
             onClick={(e) => e.stopPropagation()}
-            disabled={!isPending}
           >
             <span className="sr-only">Abrir menú</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          {onViewDetail && (
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation()
+                onViewDetail()
+              }}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              Ver Detalles
+            </DropdownMenuItem>
+          )}
           {isPending && (
             <>
               <CanAccess

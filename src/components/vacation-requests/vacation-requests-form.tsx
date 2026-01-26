@@ -225,7 +225,7 @@ export function VacationRequestsForm() {
               </option>
               {employees?.data?.map((emp) => (
                 <option key={emp.id} value={emp.id}>
-                  {emp.profile?.first_name} {emp.profile?.last_name}
+                  {emp.profile?.first_name} {emp.profile?.last_name} ({emp.profile?.email})
                 </option>
               ))}
             </select>
@@ -242,7 +242,7 @@ export function VacationRequestsForm() {
                     return emp
                       ? `${emp.profile?.first_name || ''} ${
                           emp.profile?.last_name || ''
-                        }`.trim()
+                        } (${emp.profile?.email || ''})`.trim()
                       : 'Cargando...'
                   })()}
                   disabled
