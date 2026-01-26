@@ -52,30 +52,29 @@ export function EmployeesEdit({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
+      <SheetContent className="sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Editar Empleado</SheetTitle>
           <SheetDescription>Modifique los datos del empleado.</SheetDescription>
         </SheetHeader>
-        <div className="mt-6 px-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <EmployeesForm mode="edit" currentEmployeeId={employee.id} />
-              <SheetFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={updateMutation.isPending}>
-                  {updateMutation.isPending ? 'Guardando...' : 'Guardar'}
-                </Button>
-              </SheetFooter>
-            </form>
-          </Form>
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 py-4 px-4">
+            <EmployeesForm mode="edit" currentEmployeeId={employee.id} />
+            <SheetFooter className="flex-col sm:flex-col sm:space-x-0 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                className="w-full"
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={updateMutation.isPending} className="w-full">
+                {updateMutation.isPending ? 'Guardando...' : 'Guardar'}
+              </Button>
+            </SheetFooter>
+          </form>
+        </Form>
       </SheetContent>
     </Sheet>
   )

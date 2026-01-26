@@ -13,6 +13,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
+  SheetFooter,
 } from '@/components/ui/sheet'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -65,19 +66,20 @@ export function VacationPeriodsCreate({
             className="flex flex-col gap-4 py-4 px-4"
           >
             <VacationPeriodsForm />
-            <div className="flex justify-end gap-2">
+            <SheetFooter className="p-0 gap-2">
               <Button
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
                 type="button"
+                className="w-full"
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" disabled={isPending} className="w-full">
                 {isPending ? 'Creando...' : 'Crear'}
               </Button>
-            </div>
+            </SheetFooter>
           </form>
         </FormProvider>
       </SheetContent>

@@ -8,11 +8,23 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
+import { CalendarIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 export function VacationPeriodsForm() {
   const {
     register,
+    control,
     formState: { errors },
   } = useFormContext()
 
@@ -56,7 +68,46 @@ export function VacationPeriodsForm() {
         <Field>
           <FieldLabel htmlFor="start_date">Fecha Inicio</FieldLabel>
           <FieldContent>
-            <Input id="start_date" type="date" {...register('start_date')} />
+            <Controller
+              control={control}
+              name="start_date"
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-full pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value + 'T00:00:00'), 'PPP', {
+                          locale: es,
+                        })
+                      ) : (
+                        <span>Seleccione una fecha</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        field.value
+                          ? new Date(field.value + 'T00:00:00')
+                          : undefined
+                      }
+                      onSelect={(date) => {
+                        field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
             <FieldError errors={[errors.start_date]} />
           </FieldContent>
         </Field>
@@ -64,7 +115,46 @@ export function VacationPeriodsForm() {
         <Field>
           <FieldLabel htmlFor="end_date">Fecha Fin</FieldLabel>
           <FieldContent>
-            <Input id="end_date" type="date" {...register('end_date')} />
+            <Controller
+              control={control}
+              name="end_date"
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'w-full pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      {field.value ? (
+                        format(new Date(field.value + 'T00:00:00'), 'PPP', {
+                          locale: es,
+                        })
+                      ) : (
+                        <span>Seleccione una fecha</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        field.value
+                          ? new Date(field.value + 'T00:00:00')
+                          : undefined
+                      }
+                      onSelect={(date) => {
+                        field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
             <FieldError errors={[errors.end_date]} />
           </FieldContent>
         </Field>

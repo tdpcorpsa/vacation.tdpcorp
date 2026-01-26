@@ -10,6 +10,7 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -51,32 +52,31 @@ export function EmployeesCreate() {
           Nuevo Empleado
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Crear Empleado</SheetTitle>
           <SheetDescription>
             Agregue un nuevo empleado al sistema.
           </SheetDescription>
         </SheetHeader>
-        <div className="mt-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <EmployeesForm mode="create" />
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={createMutation.isPending}>
-                  {createMutation.isPending ? 'Guardando...' : 'Guardar'}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 py-4 px-4">
+            <EmployeesForm mode="create" />
+            <SheetFooter className="flex-col sm:flex-col sm:space-x-0 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="w-full"
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={createMutation.isPending} className="w-full">
+                {createMutation.isPending ? 'Guardando...' : 'Guardar'}
+              </Button>
+            </SheetFooter>
+          </form>
+        </Form>
       </SheetContent>
     </Sheet>
   )

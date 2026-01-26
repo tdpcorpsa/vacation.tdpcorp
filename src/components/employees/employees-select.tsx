@@ -13,12 +13,14 @@ interface EmployeesSelectProps {
   value?: string
   onValueChange: (value: string) => void
   disabled?: boolean
+  showAllOption?: boolean
 }
 
 export function EmployeesSelect({
   value,
   onValueChange,
   disabled,
+  showAllOption,
 }: EmployeesSelectProps) {
   const { data, isLoading } = useEmployeesList({
     pagination: { page: 1, pageSize: 1000 },
@@ -30,6 +32,7 @@ export function EmployeesSelect({
         <SelectValue placeholder="Seleccionar empleado..." />
       </SelectTrigger>
       <SelectContent>
+        {showAllOption && <SelectItem value="all">Todos</SelectItem>}
         {isLoading ? (
           <div className="p-2 text-sm text-muted-foreground">Cargando...</div>
         ) : (
