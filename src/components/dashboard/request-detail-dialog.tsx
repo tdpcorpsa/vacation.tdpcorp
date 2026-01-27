@@ -108,7 +108,7 @@ export function RequestDetailDialog({
     if ('decidedByUser' in request && request.decidedByUser) {
       return `${request.decidedByUser.first_name} ${request.decidedByUser.last_name}`
     }
-    return 'Administrador'
+    return  'Administrador'
   }
 
   const getSubmittedByName = () => {
