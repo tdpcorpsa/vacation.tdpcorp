@@ -118,7 +118,9 @@ export function RequestsSummaryCard({
               </span>
               <span className="text-[11px] text-muted-foreground">
                 {lastPending
-                  ? new Date(lastPending.submitted_at).toLocaleDateString()
+                  ? new Date(
+                      lastPending.submitted_at || lastPending.created_at
+                    ).toLocaleDateString()
                   : 'Sin pendientes'}
               </span>
             </div>

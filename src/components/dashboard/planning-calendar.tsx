@@ -20,6 +20,7 @@ import { CalendarEvent } from './planning-types'
 interface PlanningCalendarProps {
   requests: EnrichedVacationRequest[]
   selectedRequestIds: string[]
+  onSelectRequest: (id: string) => void
 }
 
 // Paleta de colores vibrantes estilo "Google Calendar" o similar
@@ -45,6 +46,7 @@ const getEventColor = (id: string) => {
 export function PlanningCalendar({
   requests,
   selectedRequestIds,
+  onSelectRequest,
 }: PlanningCalendarProps) {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
 
@@ -70,14 +72,12 @@ export function PlanningCalendar({
       .filter((req) => req.status === 'APPROVED')
       .map((req) => {
         // Asegurar fechas en zona horaria local para evitar desfases
-        // Asumimos que la fecha viene en formato YYYY-MM-DD
+        // Parseamos estrictamente los componentes YYYY-MM-DD para crear fecha local a las 00:00
         const parseLocalDate = (dateStr: string) => {
           if (!dateStr) return new Date()
-          // Si viene solo fecha YYYY-MM-DD
-          if (dateStr.includes('T')) {
-            return new Date(dateStr)
-          }
-          const [y, m, d] = dateStr.split('-').map(Number)
+          // Ignorar la parte de tiempo (T...) para evitar conversiones a UTC
+          const datePart = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr
+          const [y, m, d] = datePart.split('-').map(Number)
           return new Date(y, m - 1, d)
         }
 
@@ -176,6 +176,7 @@ export function PlanningCalendar({
               events={events}
               currentMonth={currentDate}
               selectedRequestIds={selectedRequestIds}
+              onSelectRequest={onSelectRequest}
             />
           ))}
         </div>

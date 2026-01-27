@@ -82,6 +82,17 @@ export function HrRequestsTab({
     }
   }
 
+  const formatDateTime = (dateStr: string | null | undefined) => {
+    if (!dateStr) return '-'
+    try {
+      const date = new Date(dateStr)
+      if (isNaN(date.getTime())) return dateStr
+      return format(date, 'd/M/yyyy, h:mm:ss a', { locale: es })
+    } catch (e) {
+      return dateStr || '-'
+    }
+  }
+
   const handleClearFilters = () => {
     setRequestSearch('')
     setHrStatusFilter('ALL')
@@ -218,7 +229,7 @@ export function HrRequestsTab({
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {req.total_days} días · Enviado:{' '}
-                        {formatDate(req.submitted_at)}
+                        {formatDateTime(req.submitted_at)}
                       </span>
                     </div>
                   </TableCell>
@@ -242,7 +253,7 @@ export function HrRequestsTab({
                       {req.decidedByUser && (
                         <span className="text-[10px] text-muted-foreground">
                           Por: {req.decidedByUser.first_name} (
-                          {formatDate(req.decided_at || '')})
+                          {formatDateTime(req.decided_at || '')})
                         </span>
                       )}
                     </div>

@@ -415,7 +415,7 @@ export type Database = {
           response_note: string | null
           start_date: string
           status: Database['vacation']['Enums']['request_status']
-          submitted_at: string
+          submitted_at: string | null
           total_days: number
           updated_at: string
           vacation_period_id: string
@@ -432,7 +432,7 @@ export type Database = {
           response_note?: string | null
           start_date: string
           status: Database['vacation']['Enums']['request_status']
-          submitted_at?: string
+          submitted_at?: string | null
           total_days: number
           updated_at?: string
           vacation_period_id: string
@@ -449,7 +449,7 @@ export type Database = {
           response_note?: string | null
           start_date?: string
           status?: Database['vacation']['Enums']['request_status']
-          submitted_at?: string
+          submitted_at?: string | null
           total_days?: number
           updated_at?: string
           vacation_period_id?: string
@@ -479,7 +479,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      request_status: 'PENDING' | 'APPROVED' | 'REJECTED'
+      request_status: 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED'
     }
     CompositeTypes: {
       [_ in never]: never

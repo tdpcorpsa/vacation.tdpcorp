@@ -125,7 +125,7 @@ export function VacationRequestsList() {
     },
     {
       id: 'approver',
-      header: 'Aprobado Por',
+      header: 'Decidido Por',
       cell: ({ row }) => {
         const profile = row.original.approver_profile
         return profile ? (

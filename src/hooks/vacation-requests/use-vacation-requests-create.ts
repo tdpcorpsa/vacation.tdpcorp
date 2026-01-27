@@ -20,10 +20,11 @@ export const useVacationRequestsCreate = () => {
         .from('vacation_requests')
         .insert({
           ...data,
-          status: 'PENDING',
+          status: 'DRAFT',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          submitted_at: new Date().toISOString(),
+          // submitted_at se establece cuando se envía al jefe, pero lo forzamos a null por si acaso
+          submitted_at: null,
         })
 
       if (error) throw error

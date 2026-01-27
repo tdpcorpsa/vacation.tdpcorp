@@ -32,6 +32,7 @@ interface WeekRowProps {
   events: CalendarEvent[]
   currentMonth: Date
   selectedRequestIds: string[]
+  onSelectRequest: (id: string) => void
 }
 
 export function WeekRow({
@@ -40,6 +41,7 @@ export function WeekRow({
   events,
   currentMonth,
   selectedRequestIds,
+  onSelectRequest,
 }: WeekRowProps) {
   const MAX_VISIBLE_ROWS = 4
 
@@ -209,6 +211,10 @@ export function WeekRow({
                   // Añadir un pequeño margen horizontal visual
                   marginLeft: '2px',
                   width: `calc(${(evt.colSpan / 7) * 100}% - 4px)`,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSelectRequest(evt.id)
                 }}
                 title={`${evt.title} (${format(evt.start, 'd MMM')} - ${format(
                   evt.end,

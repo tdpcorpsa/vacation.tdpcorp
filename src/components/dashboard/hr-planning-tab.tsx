@@ -49,7 +49,7 @@ export function HrPlanningTab({ requests }: HrPlanningTabProps) {
       <CardContent>
         <div className="flex flex-col lg:flex-row gap-6 h-[850px]">
           {/* Zona izquierda: 25% */}
-          <div className="lg:w-1/4 h-full lg:border-r lg:pr-4 overflow-hidden">
+          <div className="lg:w-1/4 h-full lg:border-r lg:pr-4">
             <PlanningSidebar
               requests={activeRequests}
               selectedRequestIds={selectedRequestIds}
@@ -62,6 +62,7 @@ export function HrPlanningTab({ requests }: HrPlanningTabProps) {
             <PlanningCalendar
               requests={activeRequests}
               selectedRequestIds={selectedRequestIds}
+              onSelectRequest={handleSelectRequest}
             />
           </div>
         </div>
