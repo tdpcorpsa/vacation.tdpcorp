@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useVacationRequestsSendEmail } from '@/hooks/vacation-requests/use-vacation-requests-send-email'
+import { useVacationRequestsSubmit } from '@/hooks/vacation-requests/use-vacation-requests-submit'
 import { Tables } from '@/types/supabase.types'
 import { Edit, Mail, MoreHorizontal, Trash, Eye } from 'lucide-react'
 import { useState } from 'react'
@@ -26,10 +27,21 @@ export function VacationRequestsActions({
 }: VacationRequestsActionsProps) {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
-  const { mutate: sendEmail, isPending: isSendingEmail } =
+  const { mutateAsync: sendEmail, isPending: isSendingEmail } =
     useVacationRequestsSendEmail()
+  const { mutateAsync: submitRequest, isPending: isSubmitting } =
+    useVacationRequestsSubmit()
 
-  const isPending = request.status === 'PENDING'
+  const isDraft = request.status === 'DRAFT'
+
+  const handleSendToBoss = async () => {
+    try {
+      await sendEmail(request.id)
+      await submitRequest(request.id)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <>
@@ -56,7 +68,7 @@ export function VacationRequestsActions({
               Ver Detalles
             </DropdownMenuItem>
           )}
-          {isPending && (
+          {isDraft && (
             <>
               <CanAccess
                 subdomain="vacation"
@@ -72,12 +84,12 @@ export function VacationRequestsActions({
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation()
-                  sendEmail(request.id)
+                  handleSendToBoss()
                 }}
-                disabled={isSendingEmail}
+                disabled={isSendingEmail || isSubmitting}
               >
                 <Mail className="mr-2 h-4 w-4" />
-                {isSendingEmail ? 'Enviando...' : 'Enviar al Jefe'}
+                {isSendingEmail || isSubmitting ? 'Enviando...' : 'Enviar al Jefe'}
               </DropdownMenuItem>
               <CanAccess
                 subdomain="vacation"

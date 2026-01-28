@@ -72,8 +72,9 @@ export function useHrSelectors(
     const decided = hrRequests.filter((r) => r.decided_at && r.submitted_at)
     if (!decided.length) return 0
     const totalHours = decided.reduce((acc, r) => {
+      if (!r.submitted_at || !r.decided_at) return acc
       const start = new Date(r.submitted_at).getTime()
-      const end = new Date(r.decided_at!).getTime()
+      const end = new Date(r.decided_at).getTime()
       return acc + (end - start) / (1000 * 60 * 60)
     }, 0)
     return Math.round(totalHours / decided.length)

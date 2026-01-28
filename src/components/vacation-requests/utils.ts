@@ -6,6 +6,8 @@ export const getStatusColor = (status: string) => {
       return 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400'
     case 'PENDING':
       return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400'
+    case 'DRAFT':
+      return 'text-slate-600 bg-slate-100 dark:bg-slate-800 dark:text-slate-400'
     default:
       return 'text-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-gray-400'
   }
@@ -19,6 +21,8 @@ export const getStatusLabel = (status: string) => {
       return 'Rechazado'
     case 'PENDING':
       return 'Pendiente'
+    case 'DRAFT':
+      return 'Borrador'
     default:
       return status
   }

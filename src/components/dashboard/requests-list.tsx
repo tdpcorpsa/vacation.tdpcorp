@@ -69,8 +69,8 @@ export function RequestsList({
 
     if (!sortConfig) {
       return requestsToSort.sort((a, b) => {
-        const aDate = new Date(a.submitted_at).getTime()
-        const bDate = new Date(b.submitted_at).getTime()
+        const aDate = new Date(a.submitted_at || a.created_at).getTime()
+        const bDate = new Date(b.submitted_at || b.created_at).getTime()
         return bDate - aDate
       })
     }
