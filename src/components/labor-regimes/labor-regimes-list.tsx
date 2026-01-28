@@ -186,7 +186,14 @@ export function LaborRegimesList() {
         </div>
       )}
 
-      <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-muted-foreground">
+          Mostrando {data?.data.length ? (page - 1) * pageSize + 1 : 0} a{' '}
+          {Math.min(page * pageSize, data?.total || 0)} de {data?.total || 0}{' '}
+          regímenes
+        </div>
+        <PaginationGroup total={data?.total || 0} pageSize={pageSize} />
+      </div>
     </div>
   )
 }
