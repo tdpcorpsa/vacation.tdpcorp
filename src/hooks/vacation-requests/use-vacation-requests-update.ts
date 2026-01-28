@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase/client'
 import { VacationRequestSchemaType } from '@/schemas/vacation-requests.schema'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { validateVacationRules } from '@/lib/vacation-rules'
 
 export const useVacationRequestsUpdate = () => {
   const queryClient = useQueryClient()
@@ -16,6 +17,9 @@ export const useVacationRequestsUpdate = () => {
       id: string
       data: VacationRequestSchemaType
     }) => {
+      // Validar reglas de negocio (Perú)
+      await validateVacationRules(supabase, data, id)
+
       const { error } = await supabase
         .schema('vacation')
         .from('vacation_requests')

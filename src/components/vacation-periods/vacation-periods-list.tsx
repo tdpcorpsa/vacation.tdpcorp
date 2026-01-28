@@ -80,14 +80,22 @@ export function VacationPeriodsList() {
       accessorKey: 'start_date',
       header: 'Inicio',
       cell: ({ row }) => (
-        <span>{new Date(row.original.start_date).toLocaleDateString()}</span>
+        <span>
+          {new Date(row.original.start_date + 'T00:00:00').toLocaleDateString(
+            'es-PE'
+          )}
+        </span>
       ),
     },
     {
       accessorKey: 'end_date',
       header: 'Fin',
       cell: ({ row }) => (
-        <span>{new Date(row.original.end_date).toLocaleDateString()}</span>
+        <span>
+          {new Date(row.original.end_date + 'T00:00:00').toLocaleDateString(
+            'es-PE'
+          )}
+        </span>
       ),
     },
     {
@@ -244,8 +252,13 @@ export function VacationPeriodsList() {
                   <div className="flex flex-col">
                     <span className="font-medium">{period.period_label}</span>
                     <span className="text-sm text-muted-foreground">
-                      {new Date(period.start_date).toLocaleDateString()} -{' '}
-                      {new Date(period.end_date).toLocaleDateString()}
+                      {new Date(
+                        period.start_date + 'T00:00:00'
+                      ).toLocaleDateString('es-PE')}{' '}
+                      -{' '}
+                      {new Date(period.end_date + 'T00:00:00').toLocaleDateString(
+                        'es-PE'
+                      )}
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
@@ -274,8 +287,13 @@ export function VacationPeriodsList() {
                     <VacationPeriodsActions vacationPeriod={period} />
                   </div>
                   <div className="text-sm text-muted-foreground mb-4">
-                    {new Date(period.start_date).toLocaleDateString()} -{' '}
-                    {new Date(period.end_date).toLocaleDateString()}
+                    {new Date(period.start_date + 'T00:00:00').toLocaleDateString(
+                      'es-PE'
+                    )}{' '}
+                    -{' '}
+                    {new Date(period.end_date + 'T00:00:00').toLocaleDateString(
+                      'es-PE'
+                    )}
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span>Días Totales: {period.total_days}</span>

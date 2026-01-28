@@ -1,7 +1,8 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { Tables } from '@/types/supabase.types'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { Database, Tables } from '@/types/supabase.types'
 import { eachDayOfInterval, format, isSaturday, isSunday } from 'date-fns'
 import { es } from 'date-fns/locale'
 import nodemailer from 'nodemailer'
@@ -16,6 +17,19 @@ type VacationRequestWithDetails = Tables<
 
 export async function sendRequestEmail(requestId: string) {
   const supabase = await createClient()
+
+  // Inicializar cliente admin para consultas de sistema (emails)
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  
+  let supabaseAdmin = null
+  if (serviceRoleKey && supabaseUrl) {
+    supabaseAdmin = createSupabaseClient<Database>(supabaseUrl, serviceRoleKey)
+  }
+  
+  // Usar cliente admin si está disponible para asegurar acceso a datos de usuario,
+  // sino fallback al cliente de sesión
+  const systemClient = supabaseAdmin || supabase
 
   // 1. Obtener la solicitud, el empleado y el periodo
   const { data: request, error: requestError } = await supabase
@@ -57,24 +71,26 @@ export async function sendRequestEmail(requestId: string) {
   const formattedEndDate = format(endDate, "d 'de' MMMM, yyyy", { locale: es })
 
   // 3. Obtener el email del manager
-  const { data: managerProfile, error: managerError } = await supabase
+  const { data: managerProfile, error: managerError } = await systemClient
     .from('users_view')
     .select('email, first_name, last_name')
     .eq('id', employee.manager_id)
     .single()
 
   if (managerError || !managerProfile || !managerProfile.email) {
+    console.error('Error fetching manager email:', managerError)
     throw new Error('No se pudo obtener el email del jefe')
   }
 
   // 4. Obtener el perfil del empleado (para el nombre y email)
-  const { data: employeeProfile, error: employeeProfileError } = await supabase
+  const { data: employeeProfile, error: employeeProfileError } = await systemClient
     .from('users_view')
     .select('email, first_name, last_name')
     .eq('id', employee.id)
     .single()
 
   if (employeeProfileError || !employeeProfile || !employeeProfile.email) {
+    console.error('Error fetching employee email:', employeeProfileError)
     throw new Error('No se pudo obtener el email del empleado')
   }
 
@@ -105,6 +121,7 @@ export async function sendRequestEmail(requestId: string) {
       El empleado ${employeeProfile.first_name} ${employeeProfile.last_name} ha solicitado vacaciones.
 
       Periodo: ${vacationPeriod?.period_label || 'No especificado'}
+      ID del Empleado: ${employee.id}
       Desde: ${formattedStartDate}
       Hasta: ${formattedEndDate}
       Total de días: ${request.total_days}
@@ -121,6 +138,7 @@ export async function sendRequestEmail(requestId: string) {
       
       <p>
         <strong>Periodo:</strong> ${vacationPeriod?.period_label || 'No especificado'}<br/>
+        <strong>ID del Empleado:</strong> ${employee.id}<br/>
         <strong>Desde:</strong> ${formattedStartDate}<br/>
         <strong>Hasta:</strong> ${formattedEndDate}<br/>
         <strong>Total de días:</strong> ${request.total_days}<br/>
