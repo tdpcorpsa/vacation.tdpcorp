@@ -48,8 +48,9 @@ export function EmployeeInfoCard({
         <CanAccess
           subdomain="vacation"
           resource="employees"
-          action="edit"
+          action="update"
           variant="hidden"
+          fallbackReadId
         >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

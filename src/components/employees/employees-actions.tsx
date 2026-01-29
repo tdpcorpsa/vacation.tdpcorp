@@ -24,7 +24,7 @@ export function EmployeesActions({ employee }: EmployeesActionsProps) {
     <CanAccess
       subdomain="vacation"
       resource="employees"
-      action="edit"
+      action="update"
       variant="hidden"
     >
       <DropdownMenu>

@@ -36,8 +36,8 @@ export function VacationRequestsActions({
 
   const handleSendToBoss = async () => {
     try {
-      await sendEmail(request.id)
       await submitRequest(request.id)
+      await sendEmail(request.id)
     } catch (error) {
       console.error(error)
     }
